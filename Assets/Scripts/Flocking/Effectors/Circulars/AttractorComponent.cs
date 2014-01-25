@@ -6,12 +6,9 @@ namespace GameJam.Boids {
 	public class AttractorComponent : CircularEffector {
 
 		protected float sqrEffectDistance;
-		protected float intensity;
 
 		public void Update() {
-			this.effectDistance = this.world.AttractionDistance;
 			this.sqrEffectDistance = this.effectDistance * this.effectDistance;
-			this.intensity = this.world.AttractionIntensity;
 		}
 
 		public override void ApplyEffect (Boid other) {

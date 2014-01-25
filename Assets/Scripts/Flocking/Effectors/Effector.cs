@@ -5,11 +5,9 @@ namespace GameJam.Boids {
 
 	public abstract class Effector : MonoBehaviour {
 
-		protected World world;
 		protected Transform myTransform;
 		
 		public void Start() {
-			this.world = GameObject.FindObjectOfType<World>();
 			this.myTransform = this.transform;
 		}	
 
