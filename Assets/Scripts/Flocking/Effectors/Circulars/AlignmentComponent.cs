@@ -6,13 +6,10 @@ namespace GameJam.Boids {
 	public class AlignmentComponent : CircularEffector {
 
 		public Vector3 alignmentSpeed;
-		public float intensity;
 		private float sqrEffectDistance;
 
 		public void Update() {
-			this.sqrEffectDistance = this.world.AlignmentDistance*this.world.AlignmentDistance;
-			this.effectDistance = this.world.AlignmentDistance;
-			this.intensity = this.world.AlignmentIntensity;
+			this.sqrEffectDistance = this.effectDistance*this.effectDistance;
 		}
 
 		public override void ApplyEffect(Boid other) {

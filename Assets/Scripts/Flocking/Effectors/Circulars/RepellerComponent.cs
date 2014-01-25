@@ -5,13 +5,10 @@ namespace GameJam.Boids {
 
 	public class RepellerComponent : CircularEffector {
 
-		public float intensity;
 		private float sqrEffectDistance;
 
 		public void Update() {
-			this.effectDistance = this.world.RepulsionDistance;
 			this.sqrEffectDistance = this.effectDistance * this.effectDistance;
-			this.intensity = this.world.RepulsionIntensity;
 		}
 
 		public override void ApplyEffect (Boid other) {

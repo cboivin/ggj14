@@ -10,6 +10,13 @@ namespace GameJam.Boids {
 		[HideInInspector]
 		public Effector[] effectors;
 
+		[HideInInspector]
+		public AttractorComponent attactor;
+		[HideInInspector]
+		public RepellerComponent repeller;
+		[HideInInspector]
+		public AlignmentComponent aligner;
+
 		#region Velocity
 		public Vector3 velocity;
 		private Vector3 lastVel;
@@ -32,12 +39,13 @@ namespace GameJam.Boids {
 
 		public World worldInfos;
 
-		private AlignmentComponent alignmentComponent;
-
 		void Start () {
 			this.effectors = this.GetComponents<Effector>();
+			this.aligner = this.GetComponent<AlignmentComponent>();
+			this.repeller = this.GetComponent<RepellerComponent>();
+			this.attactor = this.GetComponent<AttractorComponent>();
+
 			this.lastVel = Vector3.zero;
-			this.alignmentComponent = this.GetComponent<AlignmentComponent>();
 			this.myTransform = this.transform;
 
 			Vector2 popPos = Random.insideUnitCircle;
@@ -46,7 +54,7 @@ namespace GameJam.Boids {
 
 		private void Update() {
 
-			this.setAlignmentDirection();
+			this.updateEffectors();
 
 			this.applyVelocities();
 
@@ -84,10 +92,14 @@ namespace GameJam.Boids {
 
 		}
 
-		private void setAlignmentDirection() {
-			if ( this.alignmentComponent != null ) {
-				this.alignmentComponent.alignmentSpeed = this.velocity;
-			}
+		private void updateEffectors() {
+			this.aligner.alignmentSpeed = this.velocity;
+			this.aligner.intensity = this.worldInfos.AlignmentIntensity;
+			this.aligner.effectDistance = this.worldInfos.AlignmentDistance;
+			this.repeller.intensity = this.worldInfos.RepulsionIntensity;
+			this.repeller.effectDistance = this.worldInfos.RepulsionDistance;
+			this.aligner.intensity = this.worldInfos.AlignmentIntensity;
+			this.aligner.effectDistance = this.worldInfos.AlignmentDistance;
 		}
 
 		private void applyVelocities() {
@@ -109,6 +121,9 @@ namespace GameJam.Boids {
 		}
 
 		public void OnDrawGizmos() {
+			if ( this.myTransform == null) {
+				return;
+			}
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawLine(this.myTransform.position, this.myTransform.position + this.velocity * 2f);
 		}

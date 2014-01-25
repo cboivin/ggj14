@@ -6,6 +6,7 @@ namespace GameJam.Boids {
 	public abstract class CircularEffector : Effector {
 
 		public float effectDistance;
+		public float intensity;
 
 		public override Vector3 ComputeDistance( Boid other ) {
 			if ( other.myTransform == null ) {

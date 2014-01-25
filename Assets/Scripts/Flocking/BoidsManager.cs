@@ -50,8 +50,10 @@ namespace GameJam.Boids {
 		}
 
 		private void computeRelations() {
-
 			int boidsCount = this.boids.Count;
+			if ( boidsCount <= 0 ) {
+				return;
+			}
 			Boid[] boidsArray = this.boids.ToArray();
 			for ( int i = 0; i < boidsCount-1; i ++ ) {
 				for ( int j = i + 1; j < boidsCount; j++ )  {
