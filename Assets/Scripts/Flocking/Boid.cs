@@ -58,7 +58,7 @@ namespace GameJam.Boids {
 
 		private void Update() {
 
-//			this.updateEffectors();
+			this.updateEffectors();
 
 			this.applyVelocities();
 
@@ -96,15 +96,15 @@ namespace GameJam.Boids {
 
 		}
 
-//		private void updateEffectors() {
-//			this.aligner.alignmentSpeed = this.velocity;
+		private void updateEffectors() {
+			this.aligner.alignmentSpeed = this.velocity;
 //			this.aligner.intensity = this.worldInfos.AlignmentIntensity;
 //			this.aligner.effectDistance = this.worldInfos.AlignmentDistance;
 //			this.repeller.intensity = this.worldInfos.RepulsionIntensity;
 //			this.repeller.effectDistance = this.worldInfos.RepulsionDistance;
 //			this.aligner.intensity = this.worldInfos.AlignmentIntensity;
 //			this.aligner.effectDistance = this.worldInfos.AlignmentDistance;
-//		}
+		}
 
 		private void applyVelocities() {
 			if ( this.alignmentEffectors != 0 ) {

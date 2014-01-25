@@ -140,7 +140,7 @@ public class Critter : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter(Collider collider)
+	void CheckCollider(Collider collider)
 	{
 		if (m_Behavior != BehaviorType.Steak)
 		{
@@ -150,6 +150,16 @@ public class Critter : MonoBehaviour
 				CritController.Instance.CritterCollision(this, critter);
 			}
 		}
+	}
+
+	void OnTriggerEnter(Collider collider)
+	{
+		CheckCollider(collider);
+	}
+
+	void OnTriggerStale(Collider collider)
+	{
+		CheckCollider(collider);
 	}
 
 	void UpdateDisplay()
