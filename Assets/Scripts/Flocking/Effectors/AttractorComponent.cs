@@ -3,21 +3,23 @@ using System.Collections;
 
 namespace GameJam.Boids {
 
-	public class AttractorComponent : Effector {
+	public class AttractorComponent : CircularEffector {
 
-		public float effectDistance;
-		public float intensity;
+		protected float sqrEffectDistance;
+		protected float intensity;
 
 		public void Update() {
 			this.effectDistance = this.world.AttractionDistance;
+			this.sqrEffectDistance = this.effectDistance * this.effectDistance;
 			this.intensity = this.world.AttractionIntensity;
 		}
 
-		public override void ApplyEffect (Boid other,Vector3 directionToOther, float distanceToOther) {
-			if (  distanceToOther > this.effectDistance ) {
+		public override void ApplyEffect (Boid other) {
+			Vector3 distance = this.ComputeDistance(other);
+			if ( distance.sqrMagnitude > this.sqrEffectDistance ) {
 				return;
 			}
-			other.attractionVel += this.intensity * -directionToOther;
+			other.attractionVel += this.intensity * -distance.normalized;
 			other.attractionEffectors++;
 		}
 		

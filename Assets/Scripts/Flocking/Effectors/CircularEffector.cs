@@ -3,15 +3,16 @@ using System.Collections;
 
 namespace GameJam.Boids {
 
-	public abstract class Effector : MonoBehaviour {
+	public abstract class CircularEffector : Effector {
 
-		public World world;
+		public float effectDistance;
 
-		public void Start() {
-			this.world = GameObject.FindObjectOfType<World>();
+		public override Vector3 ComputeDistance( Boid other ) {
+			if ( other.myTransform == null ) {
+				return  Vector3.zero;
+			}
+			return other.myTransform.position - this.myTransform.position;
 		}
-
-		public abstract void ApplyEffect(Boid other, Vector3 directionToOther, float distanceToOther);
 
 	}
 
