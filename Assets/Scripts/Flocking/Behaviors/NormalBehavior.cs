@@ -56,8 +56,8 @@ public class NormalBehavior : Behavior
 		if (repulsion > 0)
 		{
 			fleePosition /= repulsion;
-			boid.repulsionVel += (fleePosition - m_Transform.position).normalized*this.intensity;
-			boid.repulsionEffectors++;
+			boid.attractionVel += (m_Transform.position - fleePosition).normalized*this.intensity;
+			boid.attractionEffectors++;
 		}
 	}
 }
