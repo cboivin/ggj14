@@ -13,14 +13,13 @@ public class SteakBehavior : Behavior
 	{
 		m_Transform = transform;
 	}
-
-
+	
 	public override void ApplyBehavior (Boid boid)
 	{
 		List<Critter> critters = CritController.Instance.m_Crits;
-		Vector3 targetPosition = Vector3.zero;
+		Vector3 fleePosition = Vector3.zero;
 
-		int crittersFlee = 0;
+		int repulsion = 0;
 		foreach(Critter crit in critters)
 		{
 			if (crit.gameObject != gameObject)
@@ -29,18 +28,17 @@ public class SteakBehavior : Behavior
 				float magnitude = distance.magnitude;
 				if (magnitude < effectDistance)
 				{
-					targetPosition += crit.m_Transform.position;
-					crittersFlee++;
+					fleePosition += crit.m_Transform.position;
+					repulsion++;
 				}
 			}
 		}
 
-		if (crittersFlee > 0)
+		if (repulsion > 0)
 		{
-			Debug.Log("Flee " + crittersFlee + " Critters");
-			targetPosition /= crittersFlee;
-			boid.attractionVel += (m_Transform.position - targetPosition).normalized*this.intensity;
-			boid.attractionEffectors++;
+			fleePosition /= repulsion;
+			boid.repulsionVel += (fleePosition - m_Transform.position).normalized*this.intensity;
+			boid.repulsionEffectors++;
 		}
 	}
 

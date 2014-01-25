@@ -37,6 +37,10 @@ public class Critter : MonoBehaviour
 	private BehaviorType m_SavedBehavior;
 	private float m_PreviousX;
 
+	private const float HUNTER_SCALE = 1.5f;
+	private const float NORMAL_SCALE = 1.0f;
+	private const float STEAK_SCALE = 0.5f;
+
 	void Start()
 	{
 		m_Transform = transform;
@@ -116,16 +120,22 @@ public class Critter : MonoBehaviour
 		switch(m_Behavior)
 		{
 			case BehaviorType.Hunter:
-				m_Transform.localScale = new Vector3(Mathf.Min(2, m_Transform.localScale.x + 0.1f * Time.timeScale), Mathf.Min(2, m_Transform.localScale.y + 0.1f * Time.timeScale), 1);
-			break;
+				m_Transform.localScale = new Vector3(Mathf.Min(HUNTER_SCALE, m_Transform.localScale.x + 0.1f * Time.timeScale), Mathf.Min(HUNTER_SCALE, m_Transform.localScale.y + 0.1f * Time.timeScale), 1);
+				break;
 
 			case BehaviorType.Normal:
-				m_Transform.localScale = new Vector3(Mathf.Min(1, m_Transform.localScale.x + 0.1f * Time.timeScale), Mathf.Min(1, m_Transform.localScale.y + 0.1f * Time.timeScale), 1);
-				m_Transform.localScale = new Vector3(Mathf.Max(1, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(1, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
+				if (m_Transform.localScale.x < NORMAL_SCALE)
+				{
+					m_Transform.localScale = new Vector3(Mathf.Min(NORMAL_SCALE, m_Transform.localScale.x + 0.1f * Time.timeScale), Mathf.Min(NORMAL_SCALE, m_Transform.localScale.y + 0.1f * Time.timeScale), 1);
+				}
+				if (m_Transform.localScale.x > NORMAL_SCALE)
+				{
+					m_Transform.localScale = new Vector3(Mathf.Max(NORMAL_SCALE, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(NORMAL_SCALE, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
+				}
 				break;
 
 			case BehaviorType.Steak:
-				m_Transform.localScale = new Vector3(Mathf.Max(0.5f, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(0.5f, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
+				m_Transform.localScale = new Vector3(Mathf.Max(STEAK_SCALE, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(STEAK_SCALE, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
 				break;
 		}
 	}

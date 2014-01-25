@@ -38,12 +38,14 @@ namespace GameJam.Boids {
 		private void keepBoidsNumber() {
 			this.boidsNumber  = this.boidsNumber < 0 ? 0 : this.boidsNumber;
 			while ( this.boids.Count < this.boidsNumber ) {
+				Debug.Log("BoidsManager add boids");
 				Boid boid = (GameObject.Instantiate(this.BoidTemplate) as GameObject).GetComponent<Boid>();
 				boid.transform.parent = this.transform;
 				boid.worldInfos = this.world;
 				this.boids.Add(boid.GetComponent<Boid>());
 			}
 			while ( this.boids.Count > this.boidsNumber ) {
+				Debug.Log("BoidsManager remove boids");
 				this.boids[0].Kill();
 				this.boids.RemoveAt(0);
 			}
@@ -54,7 +56,12 @@ namespace GameJam.Boids {
 			int boidsCount = this.boids.Count;
 			Boid[] boidsArray = this.boids.ToArray();
 			for ( int i = 0; i < boidsCount-1; i ++ ) {
-				for ( int j = i + 1; j < boidsCount; j++ )  {
+				for ( int j = i + 1; j < boidsCount; j++ ) {
+					if (boidsArray[i].layer != boidsArray[j].layer)
+					{
+						continue;
+					}
+
 					int effectorsCount = boidsArray[i].effectors.Length;
 					for ( int k = 0; k < effectorsCount; k++ ) {
 						boidsArray[i].effectors[k].ApplyEffect(boidsArray[j]);

@@ -10,6 +10,8 @@ namespace GameJam.Boids {
 		[HideInInspector]
 		public Effector[] effectors;
 
+		public int layer;
+
 		#region Velocity
 		public Vector3 velocity;
 		private Vector3 lastVel;
@@ -40,8 +42,8 @@ namespace GameJam.Boids {
 			this.alignmentComponent = this.GetComponent<AlignmentComponent>();
 			this.myTransform = this.transform;
 
-			Vector2 popPos = Random.insideUnitCircle;
-			this.myTransform.localPosition = Vector3.left * popPos.x + Vector3.up * popPos.y;
+			//Vector2 popPos = Random.insideUnitCircle;
+			//this.myTransform.localPosition = Vector3.left * popPos.x + Vector3.up * popPos.y;
 		}
 
 		private void Update() {
@@ -110,7 +112,7 @@ namespace GameJam.Boids {
 
 		public void OnDrawGizmos() {
 			Gizmos.color = Color.yellow;
-			Gizmos.DrawLine(this.myTransform.position, this.myTransform.position + this.velocity * 2f);
+			Gizmos.DrawLine(this.transform.position, this.transform.position + this.velocity * 2f);
 		}
 
 	} 

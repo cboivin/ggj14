@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
 	public Camera m_MainCamera;
+	public Transform m_CursorObject;
 
 	public float m_Speed = 2f;
 	public float m_DashSpeed = 10f;
@@ -16,7 +17,6 @@ public class PlayerController : MonoBehaviour
 
 	private Plane m_PlayerMovementPlane;
 	private Transform m_Transform;
-	private Transform m_CursorObject;
 
 	void Start ()
 	{
@@ -51,16 +51,20 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 distance = targetPosition - m_Transform.position;
 
+		if (m_CursorObject != null)
+		{
+			m_CursorObject.localEulerAngles = new Vector3(0, 0, Vector2.Angle(m_Transform.position, cursorWorldPosition));
+		}
+
 		if (distance.magnitude > 0.1f)
 		{
 			m_Transform.position += distance.normalized * Mathf.Min(distance.magnitude, 5) * speed * Time.deltaTime;
-			// Could still look at cursorWorldPosition
-			//m_Transform.LookAt(targetPosition);
 		}
 		else
 		{
 			m_CurrentDashDuration = 0;
 		}
+
 
 		m_CurrentDashDuration = Mathf.Max(0, m_CurrentDashDuration - Time.deltaTime);
 
