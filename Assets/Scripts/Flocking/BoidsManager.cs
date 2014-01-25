@@ -13,15 +13,22 @@ namespace GameJam.Boids {
 		public World world;
 		[HideInInspector]
 		public List<Boid> boids;
+		[HideInInspector]
+		public LinearEffector[] obstacles;
 
 		#region Update
 
+		void Start() {
+			this.world = GameObject.FindObjectOfType<World>();
+			this.obstacles = GameObject.FindObjectsOfType<LinearEffector>();
+		}
+
 		void Update () {
-			this.keepBoidsNumber();
-//		}
-//
-//		void FixedUpdate() {
 			this.computeRelations();
+		}
+
+		void LateUpdate() {
+			this.keepBoidsNumber();
 		}
 
 		#endregion
@@ -48,18 +55,22 @@ namespace GameJam.Boids {
 			Boid[] boidsArray = this.boids.ToArray();
 			for ( int i = 0; i < boidsCount-1; i ++ ) {
 				for ( int j = i + 1; j < boidsCount; j++ )  {
-					Vector3 direction = boidsArray[j].transform.position - boidsArray[i].transform.position; 
-					float distance = direction.magnitude;
-					direction = direction.normalized;
 					int effectorsCount = boidsArray[i].effectors.Length;
 					for ( int k = 0; k < effectorsCount; k++ ) {
-						boidsArray[i].effectors[k].ApplyEffect(boidsArray[j],direction, distance);
+						boidsArray[i].effectors[k].ApplyEffect(boidsArray[j]);
 					}
 					effectorsCount = boidsArray[i].effectors.Length;
 					for ( int k = 0; k < effectorsCount; k++ ) {
-						boidsArray[j].effectors[k].ApplyEffect(boidsArray[i],-direction, distance);
+						boidsArray[j].effectors[k].ApplyEffect(boidsArray[i]);
 					}
 				}
+				for ( int j = 0; j < this.obstacles.Length; j++ ) {
+					this.obstacles[j].ApplyEffect(boidsArray[i]);
+				}
+			}
+			//last boid wasnt affected by obstacles
+			for ( int j = 0; j < this.obstacles.Length; j++ ) {
+				this.obstacles[j].ApplyEffect(boidsArray[boidsCount-1]);
 			}
 		}
 

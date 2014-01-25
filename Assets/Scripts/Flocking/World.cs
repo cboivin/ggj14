@@ -13,19 +13,19 @@ namespace GameJam.Boids {
 		public float maxSteeringVel;
 
 
-		[Range(0f, 40f)]
+		[Range(0f, 20f)]
 		public float AlignmentDistance;
-		[Range(0f, 50f)]
+		[Range(0f, 10f)]
 		public float AlignmentIntensity;
 
-		[Range(0f, 40f)]
+		[Range(0f, 20f)]
 		public float RepulsionDistance;
-		[Range(0f, 50f)]
+		[Range(0f, 10f)]
 		public float RepulsionIntensity;
 
-		[Range(0f, 40f)]
+		[Range(0f, 20f)]
 		public float AttractionDistance;
-		[Range(0f, 50f)]
+		[Range(0f, 10f)]
 		public float AttractionIntensity;
 
 	} 

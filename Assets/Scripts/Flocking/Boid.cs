@@ -15,6 +15,8 @@ namespace GameJam.Boids {
 		private Vector3 lastVel;
 
 		[HideInInspector]
+		public Transform myTransform;
+		[HideInInspector]
 		public Vector3 	attractionVel;
 		[HideInInspector]
 		public int 	 	attractionEffectors = 1;
@@ -36,9 +38,10 @@ namespace GameJam.Boids {
 			this.effectors = this.GetComponents<Effector>();
 			this.lastVel = Vector3.zero;
 			this.alignmentComponent = this.GetComponent<AlignmentComponent>();
+			this.myTransform = this.transform;
 
 			Vector2 popPos = Random.insideUnitCircle;
-			this.transform.localPosition = Vector3.left * popPos.x + Vector3.up * popPos.y;
+			this.myTransform.localPosition = Vector3.left * popPos.x + Vector3.up * popPos.y;
 		}
 
 		private void Update() {
@@ -73,10 +76,11 @@ namespace GameJam.Boids {
 			}
 
 			//rotate
-			this.transform.rotation = Quaternion.LookRotation(this.velocity);
+			this.myTransform.rotation = Quaternion.LookRotation(this.velocity);
 
 			// apply force
-			this.transform.localPosition += this.velocity * Time.fixedDeltaTime;
+			this.velocity.z = 0f;
+			this.myTransform.localPosition += this.velocity * Time.deltaTime;
 
 		}
 
@@ -93,7 +97,7 @@ namespace GameJam.Boids {
 			if ( this.repulsionEffectors != 0 ) {
 				this.velocity += this.repulsionVel;
 			}
-			if ( this.alignmentEffectors != 0 ) {
+			if ( this.attractionEffectors != 0 ) {
 				this.velocity += this.attractionVel/this.attractionEffectors;
 			}
 			this.alignmentEffectors = this.attractionEffectors = this.repulsionEffectors = 0;
@@ -106,7 +110,7 @@ namespace GameJam.Boids {
 
 		public void OnDrawGizmos() {
 			Gizmos.color = Color.yellow;
-			Gizmos.DrawLine(this.transform.position, this.transform.position + this.velocity * 2f);
+			Gizmos.DrawLine(this.myTransform.position, this.myTransform.position + this.velocity * 2f);
 		}
 
 	} 
