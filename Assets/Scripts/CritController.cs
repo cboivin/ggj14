@@ -94,6 +94,14 @@ public class CritController : BoidsManager
 			if (m_Player != null)
 			{
 				m_Crits.Add(m_Player);
+
+				Boid boid = m_Player.GetComponent<Boid>();
+				if (boid)
+				{
+					boid.worldInfos = world;
+					boid.layer = (int)m_Player.m_Behavior;
+					boids.Add(boid);
+				}
 			}
 		}
 	}

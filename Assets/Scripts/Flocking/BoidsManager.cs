@@ -65,12 +65,18 @@ namespace GameJam.Boids {
 //					}
 
 					int effectorsCount = boidsArray[i].effectors.Length;
-					for ( int k = 0; k < effectorsCount; k++ ) {
-						boidsArray[i].effectors[k].ApplyEffect(boidsArray[j]);
+					if (effectorsCount > 0)
+					{
+						for ( int k = 0; k < effectorsCount; k++ ) {
+							boidsArray[i].effectors[k].ApplyEffect(boidsArray[j]);
+						}
 					}
 					effectorsCount = boidsArray[i].effectors.Length;
-					for ( int k = 0; k < effectorsCount; k++ ) {
-						boidsArray[j].effectors[k].ApplyEffect(boidsArray[i]);
+					if (effectorsCount > 0)
+					{
+						for ( int k = 0; k < effectorsCount; k++ ) {
+							boidsArray[j].effectors[k].ApplyEffect(boidsArray[i]);
+						}
 					}
 				}
 				for ( int j = 0; j < this.obstacles.Length; j++ ) {

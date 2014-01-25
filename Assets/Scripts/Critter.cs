@@ -35,6 +35,8 @@ public class Critter : MonoBehaviour
 	public Sprite m_HunterTex;
 	public Sprite m_HungryTex;
 
+	public GameObject m_RepulsorPrefab;
+
 	private BehaviorType m_SavedBehavior;
 	private BehaviorType m_SavedDisplay;
 	private float m_PreviousX;
@@ -95,7 +97,11 @@ public class Critter : MonoBehaviour
 		if (m_SavedDisplay != m_Display)
 		{
 			UpdateDisplay();
-
+			if (m_RepulsorPrefab)
+			{
+				GameObject repulsor = (GameObject)Instantiate(m_RepulsorPrefab);
+				repulsor.transform.parent = m_Transform;
+			}	
 			m_SavedDisplay = m_Display;
 		}
 
