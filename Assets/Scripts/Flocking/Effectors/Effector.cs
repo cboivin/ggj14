@@ -9,6 +9,7 @@ namespace GameJam.Boids {
 		
 		public void Start() {
 			this.myTransform = this.transform;
+			this.OnStart();
 		}	
 
 		public virtual void OnStart() {

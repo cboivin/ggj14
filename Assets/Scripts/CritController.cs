@@ -30,8 +30,9 @@ public class CritController : BoidsManager
 	}
 
 	// Use this for initialization
-	void Start ()
+	protected override void Start ()
 	{
+		base.Start();
 		if (BoidTemplate != null)
 		{
 			Transform transform = this.transform;

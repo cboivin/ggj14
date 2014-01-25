@@ -5,15 +5,27 @@ namespace GameJam.Boids {
 
 	public class RepellerComponent : CircularEffector {
 
-		private float sqrEffectDistance;
-
-		public void Update() {
-			this.sqrEffectDistance = this.effectDistance * this.effectDistance;
+		private bool isBoid;
+		private Boid boid;
+		
+		public override void OnStart ()
+		{
+			base.OnStart ();
+			this.boid = this.GetComponent<Boid>();
+			this.isBoid = this.boid != null;
 		}
-
-		public override void ApplyEffect (Boid other) {
+		
+		public override void ApplyEffect(Boid other) {
+			if ( this.isBoid ) {
+				CustomRelations.Relation relation = this.boid.customRelations.getRelation(this.boid.layer, other.layer);
+				this.effectDistance = relation.RepulsionDistance;
+				this.intensity = relation.RepulsionIntensity;
+				if ( this.intensity == 0 || this.effectDistance == 0 ) {
+					return;
+				}
+			}
 			Vector3 direction = this.ComputeDistance(other);
-			if (  direction.sqrMagnitude > this.sqrEffectDistance ) {
+			if (  direction.sqrMagnitude > this.effectDistance*this.effectDistance ) {
 				return;
 			}
 			Debug.DrawLine(this.myTransform.position, other.transform.position, Color.white);
