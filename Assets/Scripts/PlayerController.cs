@@ -53,7 +53,16 @@ public class PlayerController : MonoBehaviour
 
 		if (m_CursorObject != null)
 		{
-			m_CursorObject.localEulerAngles = new Vector3(0, 0, Vector2.Angle(m_Transform.position, cursorWorldPosition));
+			Vector2 fromVector = m_Transform.position;
+			Vector2 toVector = cursorWorldPosition-m_Transform.position;
+
+			float angle = Vector2.Angle(fromVector, toVector);
+			Vector3 cross = Vector3.Cross(fromVector, toVector);
+
+			if (cross.z < 0)
+				angle = 360 - angle;
+
+			m_CursorObject.localEulerAngles = new Vector3(0, 0, angle);
 		}
 
 		if (distance.magnitude > 0.1f)

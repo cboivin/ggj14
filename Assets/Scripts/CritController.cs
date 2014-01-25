@@ -36,6 +36,9 @@ public class CritController : BoidsManager
 		if (BoidTemplate != null)
 		{
 			Transform transform = this.transform;
+
+			int critTypeNum = boidsNumber/3;
+			BehaviorType behaviorType = BehaviorType.Normal; 
 			for (int i = 0; i< boidsNumber; i++)
 			{
 				GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate);
@@ -45,7 +48,11 @@ public class CritController : BoidsManager
 
 				if (boid && crit)
 				{
-					crit.m_Behavior = (BehaviorType)Random.Range(0, 3);
+					if (i!=0 && (int)behaviorType < (int)BehaviorType.Hunter && i%critTypeNum == 0)
+					{
+						behaviorType++;
+					}
+					crit.m_Behavior = behaviorType;//(BehaviorType)Random.Range(0, 3);
 					m_Crits.Add(crit);
 
 					boid.transform.parent = transform;
