@@ -22,7 +22,7 @@ public class SteakBehavior : Behavior
 		int repulsion = 0;
 		foreach(Critter crit in critters)
 		{
-			if (crit.gameObject != gameObject)
+			if (crit.gameObject != gameObject && (int)crit.m_Behavior != boid.layer)
 			{
 				Vector3 distance = m_Transform.position - crit.m_Transform.position;
 				float magnitude = distance.magnitude;

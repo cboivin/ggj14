@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 	void Start ()
 	{
 		m_Transform = transform;
-		m_PlayerMovementPlane = new Plane(m_Transform.up, m_Transform.position);
+		m_PlayerMovementPlane = new Plane(m_Transform.forward, m_Transform.position);
 	}
 
 	void Update ()
@@ -53,14 +53,16 @@ public class PlayerController : MonoBehaviour
 
 		if (m_CursorObject != null)
 		{
-			Vector2 fromVector = m_Transform.position;
+			Vector2 fromVector = new Vector2(1, 0);
 			Vector2 toVector = cursorWorldPosition-m_Transform.position;
 
 			float angle = Vector2.Angle(fromVector, toVector);
 			Vector3 cross = Vector3.Cross(fromVector, toVector);
 
 			if (cross.z < 0)
+			{
 				angle = 360 - angle;
+			}
 
 			m_CursorObject.localEulerAngles = new Vector3(0, 0, angle);
 		}
