@@ -23,6 +23,9 @@ namespace GameJam.Boids {
 		}
 
 		public void OnDrawGizmos() {
+			if ( this.myTransform == null ) {
+				return;
+			}
 			Gizmos.color = Color.magenta;
 			Gizmos.DrawRay(this.myTransform.position, this.effectDirection * 10f);
 

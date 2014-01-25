@@ -18,16 +18,16 @@ namespace GameJam.Boids {
 
 		#region Update
 
-		void Start() {
+		protected virtual void Start() {
 			this.world = GameObject.FindObjectOfType<World>();
 			this.obstacles = GameObject.FindObjectsOfType<LinearEffector>();
 		}
 
-		void Update () {
+		protected virtual void Update () {
 			this.computeRelations();
 		}
 
-		void LateUpdate() {
+		protected virtual void LateUpdate() {
 			this.keepBoidsNumber();
 		}
 
@@ -59,10 +59,10 @@ namespace GameJam.Boids {
 			Boid[] boidsArray = this.boids.ToArray();
 			for ( int i = 0; i < boidsCount-1; i ++ ) {
 				for ( int j = i + 1; j < boidsCount; j++ ) {
-					if (boidsArray[i].layer != boidsArray[j].layer)
-					{
-						continue;
-					}
+//					if (boidsArray[i].layer != boidsArray[j].layer)
+//					{
+//						continue;
+//					}
 
 					int effectorsCount = boidsArray[i].effectors.Length;
 					for ( int k = 0; k < effectorsCount; k++ ) {
