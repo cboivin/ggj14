@@ -16,6 +16,7 @@ namespace GameJam.Boids {
 			if (  direction.sqrMagnitude > this.sqrEffectDistance ) {
 				return;
 			}
+			Debug.DrawLine(this.myTransform.position, other.transform.position, Color.white);
 			other.repulsionVel += this.intensity * direction.normalized;
 			other.repulsionEffectors++;
 		}
