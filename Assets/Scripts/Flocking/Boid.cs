@@ -84,7 +84,7 @@ namespace GameJam.Boids {
 			}
 
 			//rotate
-			this.myTransform.rotation = Quaternion.LookRotation(this.velocity);
+			//this.myTransform.rotation = Quaternion.LookRotation(this.velocity);
 
 			// apply force
 			this.velocity.z = 0f;
