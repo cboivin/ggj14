@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
 
 	public float m_Speed = 2f;
 	public float m_DashSpeed = 10f;
-	public float m_DashDuration = 0.5f;
-	public float m_DashCooldown = 0.5f;
+	public float m_DashDuration = 0.3f;
+	public float m_DashCooldown = 0.2f;
 
 	private float m_CurrentDashDuration = 0;
 	private float m_CurrentDashCooldown = 0;
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
 		if (distance.magnitude > 0.1f)
 		{
-			m_Transform.position += distance.normalized * speed * Time.deltaTime;
+			m_Transform.position += distance.normalized * Mathf.Min(distance.magnitude, 5) * speed * Time.deltaTime;
 			// Could still look at cursorWorldPosition
 			//m_Transform.LookAt(targetPosition);
 		}
