@@ -35,7 +35,7 @@ namespace GameJam.Boids {
 
 		#region Boids Managment
 
-		private void keepBoidsNumber() {
+		virtual protected void keepBoidsNumber() {
 			this.boidsNumber  = this.boidsNumber < 0 ? 0 : this.boidsNumber;
 			while ( this.boids.Count < this.boidsNumber ) {
 				Debug.Log("BoidsManager add boids");

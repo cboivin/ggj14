@@ -7,6 +7,9 @@ public class CritController : BoidsManager
 {
 	public static CritController Instance;
 
+	public int m_HuntersNumber = 1;
+	public int m_SteakNumber = 1;
+
 	public Critter m_Player;
 
 	public Vector2 m_Range = new Vector2(5f, 5f);
@@ -16,6 +19,8 @@ public class CritController : BoidsManager
 	public List<Critter> m_Steaks = new List<Critter>();
 
 	public List<Critter> m_Crits = new List<Critter>();
+	
+
 
 	void Awake()
 	{
@@ -37,10 +42,22 @@ public class CritController : BoidsManager
 		{
 			Transform transform = this.transform;
 
-			int critTypeNum = boidsNumber/3;
-			BehaviorType behaviorType = BehaviorType.Normal; 
+			int huntersNumber = m_HuntersNumber;
+			int steaksNumber = m_SteakNumber;
+
 			for (int i = 0; i< boidsNumber; i++)
 			{
+				BehaviorType behaviorType = BehaviorType.Normal;
+				if (huntersNumber > 0)
+				{
+					huntersNumber--;
+					behaviorType = BehaviorType.Hunter;
+				}
+				if (steaksNumber > 0)
+				{
+					steaksNumber--;
+					behaviorType = BehaviorType.Steak;
+				}
 				GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate);
 
 				Boid boid = gameObject.GetComponent<Boid>();
@@ -48,11 +65,22 @@ public class CritController : BoidsManager
 
 				if (boid && crit)
 				{
-					if (i!=0 && (int)behaviorType < (int)BehaviorType.Hunter && i%critTypeNum == 0)
+					crit.m_Behavior = behaviorType;
+					crit.m_Display = behaviorType;
+					switch (crit.m_Behavior)
 					{
-						behaviorType++;
+						case BehaviorType.Normal:
+							m_Normals.Add(crit);
+						break;
+
+						case BehaviorType.Hunter:
+							m_Hunters.Add(crit);
+						break;
+
+						case BehaviorType.Steak:
+							m_Steaks.Add(crit);
+						break;
 					}
-					crit.m_Behavior = behaviorType;//(BehaviorType)Random.Range(0, 3);
 					m_Crits.Add(crit);
 
 					boid.transform.parent = transform;
@@ -68,5 +96,127 @@ public class CritController : BoidsManager
 				m_Crits.Add(m_Player);
 			}
 		}
+	}
+
+	override protected void keepBoidsNumber()
+	{
+	}
+
+	public void CreateNewSteak()
+	{
+		//Debug.Log("Create new steak");
+		int index;
+		int tryCount = 0;
+		do
+		{
+			index = Random.Range(0, m_Normals.Count);
+			++tryCount;
+		} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
+		//Debug.Log("tryCount = " + tryCount);
+		if (m_Normals[index].m_CritterType == CritterType.Player)
+		{
+			//Debug.Log("no new steak...");
+			return;
+		}
+
+		Critter newSteak = m_Normals[index];
+		newSteak.m_Behavior = BehaviorType.Steak;
+		newSteak.m_Display = BehaviorType.Steak;
+
+		m_Normals.Remove(newSteak);
+		m_Steaks.Add(newSteak);
+	}
+
+	public void CritterCollision(Critter critter1, Critter critter2)
+	{
+		BehaviorType critter1Behavior = critter1.m_Behavior;
+		BehaviorType critter2Behavior = critter2.m_Behavior;
+		Critter eater = null;
+		Critter victim = null;
+		BehaviorType nextState = BehaviorType.Hunter;
+		BehaviorType nextDisplay = BehaviorType.Hunter;
+
+		if (critter1Behavior == BehaviorType.Hunter)
+		{
+			eater = critter1;
+			victim = critter2;
+		}
+		else if (critter2Behavior == BehaviorType.Hunter)
+		{
+			eater = critter2;
+			victim = critter1;
+		}
+		else if (critter1Behavior == BehaviorType.Normal && critter2Behavior == BehaviorType.Steak)
+		{
+			eater = critter1;
+			victim = critter2;
+		}
+		else
+		{
+			eater = critter2;
+			victim = critter1;
+		}
+
+		//Debug.Log(eater.m_Behavior + " ate " + victim.m_Behavior + "! it becomes a " + nextState);
+
+		m_Crits.Remove(victim);
+		m_Hunters.Remove(victim);
+		m_Normals.Remove(victim);
+		m_Steaks.Remove(victim);
+
+		// Replace a steak eaten by a new one
+		if (victim.m_Behavior == BehaviorType.Steak && m_Normals.Count > 0 && (m_Hunters.Count == 0 || nextState == eater.m_Behavior))
+		{
+			CreateNewSteak();
+		}
+
+		if (nextState != eater.m_Behavior)
+		{
+			foreach(Critter crit in m_Hunters)
+			{
+				if (crit.m_CritterType == CritterType.Player)
+				{
+					foreach(Critter crit2 in m_Normals)
+					{
+						if (crit2 != eater)
+						{
+							crit2.m_Display = BehaviorType.Hunter;
+						}
+					}
+				}
+
+				crit.m_Behavior = BehaviorType.Steak;
+				crit.m_Display = BehaviorType.Steak;
+			}
+			m_Steaks.AddRange(m_Hunters);
+			m_Hunters.Clear();
+
+			m_Normals.Remove(eater);
+			m_Hunters.Add(eater);
+		}
+
+		if (eater.m_CritterType == CritterType.Player)
+		{
+			if (nextState == BehaviorType.Hunter)
+			{
+				foreach (Critter crit in m_Normals)
+				{
+					if (crit != eater)
+					{
+						crit.m_Display = BehaviorType.Steak;
+					}
+				}
+			}
+		}
+
+		Boid boid = victim.GetComponent<Boid>();
+		if (boid != null)
+		{
+			boids.Remove(boid);
+		}
+
+		Destroy(victim.gameObject);
+		eater.m_Behavior = nextState;
+		eater.m_Display = nextDisplay;
 	}
 }
