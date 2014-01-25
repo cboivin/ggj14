@@ -73,7 +73,7 @@ namespace GameJam.Boids {
 			}
 
 			//rotate
-			this.transform.rotation = Quaternion.LookRotation(this.velocity);
+			//this.transform.rotation = Quaternion.LookRotation(this.velocity);
 
 			// apply force
 			this.transform.localPosition += this.velocity * Time.fixedDeltaTime;
@@ -93,7 +93,7 @@ namespace GameJam.Boids {
 			if ( this.repulsionEffectors != 0 ) {
 				this.velocity += this.repulsionVel;
 			}
-			if ( this.alignmentEffectors != 0 ) {
+			if ( this.attractionEffectors != 0 ) {
 				this.velocity += this.attractionVel/this.attractionEffectors;
 			}
 			this.alignmentEffectors = this.attractionEffectors = this.repulsionEffectors = 0;

@@ -9,7 +9,7 @@ namespace GameJam.Boids {
 		public GameObject BoidTemplate;
 		public int boidsNumber;
 
-		[HideInInspector]
+		//[HideInInspector]
 		public World world;
 		[HideInInspector]
 		public List<Boid> boids;

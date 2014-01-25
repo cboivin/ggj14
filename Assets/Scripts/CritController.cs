@@ -1,57 +1,62 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using GameJam.Boids;
 
-public class CritController : MonoBehaviour {
+public class CritController : BoidsManager
+{
+	public static CritController Instance;
 
-	public float m_CritNumber = 50;
-	public float m_Range = 5f;
-	public Critter m_CritPrefab;
-	public List<Transform> m_Away;
-	public List<Transform> m_Lure;
+	public Critter m_Player;
 
-	private List<Critter> m_Crits = new List<Critter>();
+	public Vector2 m_Range = new Vector2(5f, 5f);
+
+	public List<Critter> m_Hunters = new List<Critter>();
+	public List<Critter> m_Lures = new List<Critter>();
+
+	public List<Critter> m_Crits = new List<Critter>();
+
+	void Awake()
+	{
+		if (Instance == null)
+		{
+			Instance = this;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
 
 	// Use this for initialization
 	void Start ()
 	{
-		if (m_CritPrefab != null)
+		if (BoidTemplate != null)
 		{
 			Transform transform = this.transform;
-			for (int i = 0; i< m_CritNumber; i++)
+			for (int i = 0; i< boidsNumber; i++)
 			{
-				Critter crit = (Critter)GameObject.Instantiate(m_CritPrefab, new Vector3(Random.Range(-m_Range, m_Range), 0, Random.Range(-m_Range, m_Range)), Quaternion.identity);
-				crit.transform.parent = transform;
-				crit.m_Behavior = (Behavior)Random.Range(0, 3);
-				m_Crits.Add(crit);
-			}
-		}
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		foreach (Critter crit in m_Crits)
-		{
-			if (crit.m_Behavior == Behavior.Fear)
-			{
-				foreach(Transform t in m_Away)
+				GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate, new Vector3(Random.Range(-m_Range.x, m_Range.x), 0, Random.Range(-m_Range.y, m_Range.y)), Quaternion.identity);
+
+				Boid boid = gameObject.GetComponent<Boid>();
+				if (boid)
 				{
-					if ((t.position - crit.transform.position).magnitude < crit.m_BehaviorRange)
-					{
-						crit.m_RigidBody.AddForce(crit.transform.position - t.position); 
-					}
+					boid.transform.parent = transform;
+					boid.worldInfos = world;
+					boids.Add(boid);
+				}
+
+				Critter crit = gameObject.GetComponent<Critter>();
+				if (crit != null)
+				{
+					crit.m_Behavior = (BehaviorType)Random.Range(0, 3);
+					m_Crits.Add(crit);
 				}
 			}
-			else if (crit.m_Behavior == Behavior.Angry)
+
+			if (m_Player != null)
 			{
-				foreach (Transform t in m_Lure)
-				{
-					if ((t.position - crit.transform.position).magnitude < crit.m_BehaviorRange)
-					{
-						crit.m_RigidBody.AddForce(t.position - crit.transform.position); 
-					}
-				}
+				m_Crits.Add(m_Player);
 			}
 		}
 	}
