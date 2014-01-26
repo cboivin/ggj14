@@ -23,6 +23,7 @@ public class Critter : MonoBehaviour
 	public BehaviorType m_Display = BehaviorType.Normal;
 	public Boid m_Boid;
 	public SpriteRenderer m_Sprite;
+	public Animator m_Animator;
 
 	[HideInInspector]
 	public Transform m_Transform;
@@ -31,10 +32,9 @@ public class Critter : MonoBehaviour
 	public Behavior m_SteakBehavior;
 	public Behavior m_HunterBehavior;
 
-	public Sprite m_NormalTex;
-	public Sprite m_SteakTex;
-	public Sprite m_HunterTex;
-	public Sprite m_HungryTex;
+	public RuntimeAnimatorController m_Normal_Running_Anim;
+	public RuntimeAnimatorController m_Steak_Running_Anim;
+	public RuntimeAnimatorController m_Hunter_Running_Anim;
 
 	public GameObject m_RepulsorPrefab;
 
@@ -43,14 +43,16 @@ public class Critter : MonoBehaviour
 	private float m_PreviousX;
 	private float m_CurrentSteakTime;
 
-	private const float HUNTER_SCALE = 1.5f;
-	private const float NORMAL_SCALE = 1.0f;
+	private const float HUNTER_SCALE = 1.4f;
+	private const float NORMAL_SCALE = 0.8f;
 	private const float STEAK_SCALE = 1.0f;
 	private const float PLAYER_STEAK_SCALE = 1.0f;
 
 	private const float PLAYER_STEAK_TIME = 5.0f;
 
 	public static int static_id = 0;
+
+	private bool m_MustPlayEatAnim;
 
 	void Start()
 	{
@@ -100,18 +102,18 @@ public class Critter : MonoBehaviour
 
 		if (m_SavedDisplay != m_Display)
 		{
+			m_SavedDisplay = m_Display;
 			UpdateDisplay();
 			if (m_RepulsorPrefab)
 			{
 				GameObject repulsor = (GameObject)Instantiate(m_RepulsorPrefab);
 				repulsor.transform.parent = m_Transform;
-			}	
-			m_SavedDisplay = m_Display;
+			}
 		}
 
 		UpdateScale();
 
-		Vector3 localScale = m_Sprite.transform.localScale;
+		Vector3 localScale = m_Animator.transform.localScale;
 		if (m_PreviousX >= m_Transform.position.x)
 		{
 			localScale.x = -Mathf.Abs(localScale.x);
@@ -120,7 +122,7 @@ public class Critter : MonoBehaviour
 		{
 			localScale.x = Mathf.Abs(localScale.x);
 		}
-		m_Sprite.transform.localScale = localScale;
+		m_Animator.transform.localScale = localScale;
 		m_PreviousX = m_Transform.position.x;
 
 		m_Sprite.sortingOrder = (int)(m_Transform.transform.position.y * -100);
@@ -158,6 +160,8 @@ public class Critter : MonoBehaviour
 			if (critter != null && critter.m_Behavior != m_Behavior && critter.m_Behavior != BehaviorType.Hunter)
 			{
 				CritController.Instance.CritterCollision(this, critter);
+
+				DisplayEatAnim();
 			}
 		}
 	}
@@ -177,16 +181,48 @@ public class Critter : MonoBehaviour
 		switch(m_Display)
 		{
 			case BehaviorType.Hunter:
-			m_Sprite.sprite = m_CritterType == CritterType.Normal ? m_HunterTex : m_HungryTex;
+			m_Animator.runtimeAnimatorController = m_Hunter_Running_Anim;
+			m_Animator.speed = 0.8f;
 			break;
 
 			case BehaviorType.Normal:
-			m_Sprite.sprite = m_NormalTex;
+			m_Animator.runtimeAnimatorController = m_Normal_Running_Anim;
+			m_Animator.speed = 1.5f;
 			break;
 
 			case BehaviorType.Steak:
-			m_Sprite.sprite = m_SteakTex;
+			m_Animator.runtimeAnimatorController = m_Steak_Running_Anim;
+			m_Animator.speed = 3f;
 			break;
+		}
+
+		if (m_MustPlayEatAnim)
+		{
+			m_MustPlayEatAnim = false;
+			DisplayEatAnim();
+		}
+	}
+
+	void DisplayEatAnim()
+	{
+		if (m_Display == m_SavedDisplay)
+		{
+			switch(m_Display)
+			{
+				case BehaviorType.Hunter:
+				string stateName = (m_CritterType == CritterType.Normal) ? "eating_hunter" : "eating_hungry";
+				//Debug.Log("stateName = " + stateName);
+				m_Animator.Play(stateName);
+				break;
+
+				case BehaviorType.Normal:
+				m_Animator.Play("eating_normal");
+				break;
+			}
+		}
+		else
+		{
+			m_MustPlayEatAnim = true;
 		}
 	}
 
