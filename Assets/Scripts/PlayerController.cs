@@ -22,6 +22,12 @@ public class PlayerController : MonoBehaviour
 	{
 		m_Transform = transform;
 		m_PlayerMovementPlane = new Plane(m_Transform.forward, m_Transform.position);
+
+		Critter crit = GetComponent<Critter>();
+		if (crit != null)
+		{
+			crit.PlayTransformParticles();
+		}
 	}
 
 	void Update ()
