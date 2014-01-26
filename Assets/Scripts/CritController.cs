@@ -223,6 +223,7 @@ public class CritController : BoidsManager
 
 	public void AddSteak(Critter newSteak)
 	{
+		Debug.Log("AddSteak " + newSteak.m_CritterType);
 		newSteak.m_Behavior = BehaviorType.Steak;
 		newSteak.m_Display = BehaviorType.Steak;
 

@@ -59,7 +59,6 @@ public class Critter : MonoBehaviour
 	public float HUNTER_SCALE = 1.4f;
 	public float NORMAL_SCALE = 0.8f;
 	public float STEAK_SCALE = 1.0f;
-	public float PLAYER_STEAK_SCALE = 1.0f;
 
 	public float PLAYER_STEAK_TIME = 5.0f;
 
@@ -103,6 +102,11 @@ public class Critter : MonoBehaviour
 		{
 			m_CurrentTimeBeforeSteak = TIME_BEFORE_STEAK;
 			m_WillBecomeSteak = false;
+			Boid boid = GetComponent<Boid>();
+			if (boid != null)
+			{
+				boid.toBeSteak = true;
+			}
 
 			Debug.Log("WILL BECOME STEAK " + m_CritterType);
 
@@ -124,6 +128,12 @@ public class Critter : MonoBehaviour
 
 			if (m_CurrentTimeBeforeSteak == 0)
 			{
+				Boid boid = GetComponent<Boid>();
+				if (boid != null)
+				{
+					boid.toBeSteak = false;
+				}
+
 				m_Animator.speed = 1;
 				CritController.Instance.AddSteak(this);
 			}

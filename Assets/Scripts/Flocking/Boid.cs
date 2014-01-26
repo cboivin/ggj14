@@ -130,7 +130,7 @@ namespace GameJam.Boids {
 			}
 			if ( this.attractionEffectors != 0 ) {
 				if ( toBeSteak ) {
-					this.attractionVel += -1f;
+					this.attractionVel *= -1f;
 				}
 				this.velocity += this.attractionVel * 0.1f /this.attractionEffectors;
 			}
