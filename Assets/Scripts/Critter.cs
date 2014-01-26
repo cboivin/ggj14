@@ -25,6 +25,8 @@ public class Critter : MonoBehaviour
 	public SpriteRenderer m_Sprite;
 	public Animator m_Animator;
 
+	public bool m_WillBecomeSteak = false;
+
 	[HideInInspector]
 	public Transform m_Transform;
 
@@ -42,13 +44,16 @@ public class Critter : MonoBehaviour
 	private BehaviorType m_SavedDisplay;
 	private float m_PreviousX;
 	private float m_CurrentSteakTime;
+	private float m_CurrentTimeBeforeSteak;
 
-	private const float HUNTER_SCALE = 1.4f;
-	private const float NORMAL_SCALE = 0.8f;
-	private const float STEAK_SCALE = 1.0f;
-	private const float PLAYER_STEAK_SCALE = 1.0f;
+	public float HUNTER_SCALE = 1.4f;
+	public float NORMAL_SCALE = 0.8f;
+	public float STEAK_SCALE = 1.0f;
+	public float PLAYER_STEAK_SCALE = 1.0f;
 
-	private const float PLAYER_STEAK_TIME = 5.0f;
+	public float PLAYER_STEAK_TIME = 5.0f;
+
+	public float TIME_BEFORE_STEAK = 5.0f;
 
 	public static int static_id = 0;
 
@@ -81,6 +86,26 @@ public class Critter : MonoBehaviour
 				CritController.Instance.m_Steaks.Remove(this);
 				CritController.Instance.m_Normals.Add(this);
 				CritController.Instance.CreateNewSteak();
+			}
+		}
+
+		if (m_WillBecomeSteak && m_CurrentTimeBeforeSteak == 0)
+		{
+			m_CurrentTimeBeforeSteak = TIME_BEFORE_STEAK;
+			m_WillBecomeSteak = false;
+
+			// Play anim
+		}
+
+		if (m_CurrentTimeBeforeSteak > 0)
+		{
+			// Speed anim
+
+			m_CurrentTimeBeforeSteak = Mathf.Max(0, m_CurrentTimeBeforeSteak-Time.deltaTime);
+
+			if (m_CurrentTimeBeforeSteak == 0)
+			{
+				CritController.Instance.AddSteak(this);
 			}
 		}
 
@@ -246,7 +271,7 @@ public class Critter : MonoBehaviour
 				break;
 
 			case BehaviorType.Steak:
-				m_Transform.localScale = new Vector3(Mathf.Max(m_CritterType==CritterType.Normal ? STEAK_SCALE : PLAYER_STEAK_SCALE, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(m_CritterType==CritterType.Normal ? STEAK_SCALE : PLAYER_STEAK_SCALE, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
+				m_Transform.localScale = new Vector3(Mathf.Max(STEAK_SCALE, m_Transform.localScale.x - 0.1f * Time.timeScale), Mathf.Max(STEAK_SCALE, m_Transform.localScale.y - 0.1f * Time.timeScale), 1);
 				break;
 		}
 	}

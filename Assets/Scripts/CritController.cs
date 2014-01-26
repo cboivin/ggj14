@@ -128,6 +128,16 @@ public class CritController : BoidsManager
 		}
 
 		Critter newSteak = m_Normals[index];
+		newSteak.m_WillBecomeSteak = true;
+		/*newSteak.m_Behavior = BehaviorType.Steak;
+		newSteak.m_Display = BehaviorType.Steak;
+
+		m_Normals.Remove(newSteak);
+		m_Steaks.Add(newSteak);*/
+	}
+
+	public void AddSteak(Critter newSteak)
+	{
 		newSteak.m_Behavior = BehaviorType.Steak;
 		newSteak.m_Display = BehaviorType.Steak;
 
