@@ -44,11 +44,11 @@ public class NormalBehavior : Behavior
 				break;
 
 				case BehaviorType.Steak:
-				if (magnitude < effectDistance)
-				{
-					targetPosition += crit.m_Transform.position * 3.0f/magnitude;
+//				if (magnitude < effectDistance)
+//				{
+					targetPosition += crit.m_Transform.position * 4.0f/magnitude;
 					attraction++;
-				}
+//				}
 				break;
 			}
 		}
