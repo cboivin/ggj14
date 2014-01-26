@@ -1,3 +1,10 @@
 Library/
 Temp/
 ProjectSettings/
+/Assembly-CSharp-Editor-vs.csproj
+/Assembly-CSharp-Editor.csproj
+/Assembly-CSharp-vs.csproj
+/Assembly-CSharp.csproj
+/GitProject-csharp.sln
+/GitProject.sln
+/GitProject.userprefs
