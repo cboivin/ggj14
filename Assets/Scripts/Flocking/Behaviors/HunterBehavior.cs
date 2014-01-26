@@ -41,6 +41,7 @@ public class HunterBehavior : Behavior
 			boid.attractionVel += (targetPosition - m_Transform.position).normalized*this.intensity;
 			boid.attractionEffectors++;
 		}
+
 	}
 
 	public void OnDrawGizmos()

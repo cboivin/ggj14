@@ -82,10 +82,11 @@ namespace GameJam.Boids {
 				this.lastVel = Vector3.zero;
 				return;
 			}
-
-			if ( this.velocity == Vector3.zero ) {
-				return;
+			
+			if ( this.alignmentEffectors + this.repulsionEffectors + this.attractionEffectors < 1  ) {
+				this.velocity += this.wander() ;
 			}
+			this.alignmentEffectors = this.attractionEffectors = this.repulsionEffectors = 0;
 
 			//rotate
 			//this.myTransform.rotation = Quaternion.LookRotation(this.velocity);
@@ -94,6 +95,12 @@ namespace GameJam.Boids {
 			this.velocity.z = 0f;
 			this.myTransform.localPosition += this.velocity * Time.deltaTime;
 
+		}
+
+		private Vector3 wander() {
+			Vector3 circleCenter = velocity.normalized;
+			Vector3 wanderForce = Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f),Vector3.forward) * Vector3.left * 3f;
+			return (wanderForce + circleCenter) * 0.1f;
 		}
 
 		private void updateEffectors() {
@@ -111,7 +118,7 @@ namespace GameJam.Boids {
 
 		private void applyVelocities() {
 			if ( this.alignmentEffectors != 0 ) {
-				this.velocity += this.alignmentVel * 0.1f/this.alignmentEffectors;	
+				this.velocity += this.alignmentVel * 0.1f/this.alignmentEffectors;
 			}
 			if ( this.repulsionEffectors != 0 ) {
 				this.velocity += this.repulsionVel * 0.1f;
@@ -119,7 +126,6 @@ namespace GameJam.Boids {
 			if ( this.attractionEffectors != 0 ) {
 				this.velocity += this.attractionVel * 0.1f /this.attractionEffectors;
 			}
-			this.alignmentEffectors = this.attractionEffectors = this.repulsionEffectors = 0;
 			this.alignmentVel = this.repulsionVel = this.attractionVel = Vector3.zero;
 		}
 

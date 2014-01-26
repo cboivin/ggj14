@@ -71,8 +71,8 @@ namespace GameJam.Boids {
 							boidsArray[i].effectors[k].ApplyEffect(boidsArray[j]);
 						}
 					}
-					effectorsCount = boidsArray[i].effectors.Length;
-					if (effectorsCount > 0)
+					effectorsCount = boidsArray[j].effectors.Length;
+					if (effectorsCount > 0 && boidsArray[i].myTransform != null )
 					{
 						for ( int k = 0; k < effectorsCount; k++ ) {
 							boidsArray[j].effectors[k].ApplyEffect(boidsArray[i]);
@@ -85,7 +85,9 @@ namespace GameJam.Boids {
 			}
 			//last boid wasnt affected by obstacles
 			for ( int j = 0; j < this.obstacles.Length; j++ ) {
-				this.obstacles[j].ApplyEffect(boidsArray[boidsCount-1]);
+				if ( boidsArray[boidsCount - 1].myTransform ) {
+					this.obstacles[j].ApplyEffect(boidsArray[boidsCount-1]);
+				}
 			}
 		}
 

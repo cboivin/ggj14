@@ -94,7 +94,7 @@ public class CritController : BoidsManager
 
 		while( true )
 		{
-			while( this.boids.Count > this.boidsNumber ) {
+			while( this.boids.Count >= this.boidsNumber ) {
 				yield return new WaitForEndOfFrame();
 			}
 
@@ -158,6 +158,7 @@ public class CritController : BoidsManager
 					m_Steaks.Add(crit);
 					break;
 			}
+
 			m_Crits.Add(crit);
 			
 			boid.worldInfos = world;
