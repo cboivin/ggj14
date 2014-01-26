@@ -17,6 +17,7 @@ public enum CritterType
 
 public class Critter : MonoBehaviour
 {
+	public int mId = -1;
 	public CritterType m_CritterType = CritterType.Normal;
 	public BehaviorType m_Behavior = BehaviorType.Normal;
 	public BehaviorType m_Display = BehaviorType.Normal;
@@ -49,8 +50,11 @@ public class Critter : MonoBehaviour
 
 	private const float PLAYER_STEAK_TIME = 5.0f;
 
+	public static int static_id = 0;
+
 	void Start()
 	{
+		mId = static_id++;
 		m_Transform = transform;
 		m_PreviousX = m_Transform.position.x;
 	}
@@ -148,10 +152,10 @@ public class Critter : MonoBehaviour
 
 	void CheckCollider(Collider collider)
 	{
-		if (m_Behavior != BehaviorType.Steak)
+		if (m_Behavior != BehaviorType.Steak && mId != -1)
 		{
 			Critter critter = collider.GetComponent<Critter>();
-			if (critter != null && critter.m_Behavior != m_Behavior)
+			if (critter != null && critter.m_Behavior != m_Behavior && critter.m_Behavior != BehaviorType.Hunter)
 			{
 				CritController.Instance.CritterCollision(this, critter);
 			}
@@ -163,7 +167,7 @@ public class Critter : MonoBehaviour
 		CheckCollider(collider);
 	}
 
-	void OnTriggerStale(Collider collider)
+	void OnTriggerStay(Collider collider)
 	{
 		CheckCollider(collider);
 	}

@@ -137,8 +137,18 @@ public class CritController : BoidsManager
 
 	public void CritterCollision(Critter critter1, Critter critter2)
 	{
+		if (critter1.mId == critter2.mId)
+		{
+			return;
+		}
+		if (critter1.mId == -1 || critter2.mId == -1)
+		{
+			return;
+		}
+
 		BehaviorType critter1Behavior = critter1.m_Behavior;
 		BehaviorType critter2Behavior = critter2.m_Behavior;
+		//Debug.Log("Collision " + critter1Behavior + "/" + critter2Behavior + "(" + critter1.mId + "/" + critter2.mId + ")");
 		Critter eater = null;
 		Critter victim = null;
 		BehaviorType nextState = BehaviorType.Hunter;
@@ -167,13 +177,15 @@ public class CritController : BoidsManager
 
 		//Debug.Log(eater.m_Behavior + " ate " + victim.m_Behavior + "! it becomes a " + nextState);
 
+		victim.mId = -1;
+
 		m_Crits.Remove(victim);
-		m_Hunters.Remove(victim);
+		//m_Hunters.Remove(victim);
 		m_Normals.Remove(victim);
 		m_Steaks.Remove(victim);
 
 		// Replace a steak eaten by a new one
-		if (victim.m_Behavior == BehaviorType.Steak && m_Normals.Count > 0 && (m_Hunters.Count == 0 || nextState == eater.m_Behavior))
+		if (victim.m_Behavior == BehaviorType.Steak && m_Steaks.Count == 0 && m_Normals.Count > 0 && (m_Hunters.Count == 0 || nextState == eater.m_Behavior))
 		{
 			CreateNewSteak();
 		}
@@ -192,7 +204,7 @@ public class CritController : BoidsManager
 						}
 					}
 				}
-
+				//Debug.Log("Hunter become Steak");
 				crit.m_Behavior = BehaviorType.Steak;
 				crit.m_Display = BehaviorType.Steak;
 			}
