@@ -155,7 +155,7 @@ public class CritController : BoidsManager
 		m_Normals.Remove(newSteak);
 		m_Steaks.Add(newSteak);
 	}
-
+	
 	public void CritterCollision(Critter critter1, Critter critter2)
 	{
 		if (critter1.mId == critter2.mId)
@@ -180,20 +180,10 @@ public class CritController : BoidsManager
 			eater = critter1;
 			victim = critter2;
 		}
-		else if (critter2Behavior == BehaviorType.Hunter)
-		{
-			eater = critter2;
-			victim = critter1;
-		}
 		else if (critter1Behavior == BehaviorType.Normal && critter2Behavior == BehaviorType.Steak)
 		{
 			eater = critter1;
 			victim = critter2;
-		}
-		else
-		{
-			eater = critter2;
-			victim = critter1;
 		}
 
 		//Debug.Log(eater.m_Behavior + " ate " + victim.m_Behavior + "! it becomes a " + nextState);
