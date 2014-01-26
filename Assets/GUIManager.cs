@@ -7,6 +7,7 @@ public class GUIManager : MonoBehaviour {
 	public SpriteRenderer inGame; 
 	public SpriteRenderer startGame; 
 	public SpriteRenderer endGame; 
+	public GUIText score;
 	private float startScreenTime;
 
 	public void startScreen(float timeOut) {
@@ -22,5 +23,7 @@ public class GUIManager : MonoBehaviour {
 
 	public void EndScreen(bool show) {
 		this.endGame.enabled = show;
+		this.score.enabled = show;
+		this.score.text = ScoreManager.getScore().ToString();
 	}
 }
