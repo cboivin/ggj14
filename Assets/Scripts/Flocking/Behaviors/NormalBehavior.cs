@@ -16,6 +16,9 @@ public class NormalBehavior : Behavior
 
 	public override void ApplyBehavior(Boid boid)
 	{
+		if ( m_Transform == null ) {
+			return;
+		}
 		List<Critter> critters = CritController.Instance.m_Crits;
 		Vector3 targetPosition = Vector3.zero;
 		Vector3 fleePosition = Vector3.zero;
@@ -24,6 +27,9 @@ public class NormalBehavior : Behavior
 		int attraction = 0;
 		foreach(Critter crit in critters)
 		{
+			if  (crit.m_Transform == null ) {
+				continue;
+			}
 			Vector3 distance = m_Transform.position - crit.m_Transform.position;
 			float magnitude = distance.magnitude;
 
