@@ -9,7 +9,8 @@ public class ScoreManager : MonoBehaviour
 	public GUIText m_ScoreLabel;
 	public GameObject m_ScoreContainer; // grow anim ?
 		
-	private int m_Score = 0;
+	[HideInInspector]
+	public int m_Score = 0;
 
 	void Awake()
 	{
@@ -26,6 +27,10 @@ public class ScoreManager : MonoBehaviour
 	public static void AddScore()
 	{
 		Instance.AddScorePrivate();
+	}
+
+	public static int getScore() {
+		return Instance.m_Score;
 	}
 
 	private void AddScorePrivate()
