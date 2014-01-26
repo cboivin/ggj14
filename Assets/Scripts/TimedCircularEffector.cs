@@ -21,6 +21,9 @@ public class TimedCircularEffector : MonoBehaviour {
 	}
 
 	public void Update() {
+		if ( initialTimeOut < 0 ) {
+			return;
+		}
 		this.timeOut -= Time.deltaTime;
 		if ( timeOut <= 0 ) {
 			GameObject.Destroy(this.gameObject);

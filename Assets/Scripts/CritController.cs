@@ -19,8 +19,8 @@ public class CritController : BoidsManager
 	public List<Critter> m_Steaks = new List<Critter>();
 
 	public List<Critter> m_Crits = new List<Critter>();
-	
 
+	private PopPoints popPoints;
 
 	void Awake()
 	{
@@ -38,59 +38,10 @@ public class CritController : BoidsManager
 	protected override void Start ()
 	{
 		base.Start();
+		this.popPoints = GameObject.FindObjectOfType<PopPoints>();
+
 		if (BoidTemplate != null)
 		{
-			Transform transform = this.transform;
-
-			int huntersNumber = m_HuntersNumber;
-			int steaksNumber = m_SteakNumber;
-
-			for (int i = 0; i< boidsNumber; i++)
-			{
-				BehaviorType behaviorType = BehaviorType.Normal;
-				if (huntersNumber > 0)
-				{
-					huntersNumber--;
-					behaviorType = BehaviorType.Hunter;
-				}
-				if (steaksNumber > 0)
-				{
-					steaksNumber--;
-					behaviorType = BehaviorType.Steak;
-				}
-				GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate);
-
-				Boid boid = gameObject.GetComponent<Boid>();
-				Critter crit = gameObject.GetComponent<Critter>();
-
-				if (boid && crit)
-				{
-					crit.m_Behavior = behaviorType;
-					crit.m_Display = behaviorType;
-					switch (crit.m_Behavior)
-					{
-						case BehaviorType.Normal:
-							m_Normals.Add(crit);
-						break;
-
-						case BehaviorType.Hunter:
-							m_Hunters.Add(crit);
-						break;
-
-						case BehaviorType.Steak:
-							m_Steaks.Add(crit);
-						break;
-					}
-					m_Crits.Add(crit);
-
-					boid.transform.parent = transform;
-					boid.transform.position = new Vector3(Random.Range(-m_Range.x, m_Range.x), Random.Range(-m_Range.y, m_Range.y), 0);
-					boid.worldInfos = world;
-					boid.layer = (int)crit.m_Behavior;
-					boids.Add(boid);
-				}
-			}
-
 			if (m_Player != null)
 			{
 				m_Crits.Add(m_Player);
@@ -102,6 +53,76 @@ public class CritController : BoidsManager
 					boid.layer = (int)m_Player.m_Behavior;
 					boids.Add(boid);
 				}
+			}
+		}
+		this.StartCoroutine(this.instanciateBoids());
+	}
+
+	protected IEnumerator instanciateBoids() {
+		int huntersNumber = m_HuntersNumber;
+		int steaksNumber = m_SteakNumber;
+
+		while( true )
+		{
+			while( this.boids.Count > this.boidsNumber ) {
+				yield return new WaitForEndOfFrame();
+			}
+			BehaviorType behaviorType = BehaviorType.Normal;
+			if (huntersNumber > 0)
+			{
+				huntersNumber--;
+				behaviorType = BehaviorType.Hunter;
+			}
+			if (steaksNumber > 0)
+			{
+				steaksNumber--;
+				behaviorType = BehaviorType.Steak;
+			}
+
+			PopPoint p = null;
+			do {
+				p = this.popPoints.GetPopPoint();
+				yield return new WaitForEndOfFrame();
+			} while ( p == null );
+
+			GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate,p.transform.position, Quaternion.identity);
+
+			Boid boid = gameObject.GetComponent<Boid>();
+			Critter crit = gameObject.GetComponent<Critter>();
+
+			if (boid && crit)
+			{
+				crit.m_Behavior = behaviorType;
+				switch ( this.m_Player.m_Behavior ) {
+				case BehaviorType.Hunter:
+					crit.m_Display = BehaviorType.Steak;
+					break;
+				case BehaviorType.Normal:
+					crit.m_Display = BehaviorType.Normal;
+					break;
+				case BehaviorType.Steak:
+					crit.m_Display = BehaviorType.Hunter;
+					break;
+				}
+				switch (crit.m_Behavior)
+				{
+					case BehaviorType.Normal:
+						m_Normals.Add(crit);
+					break;
+
+					case BehaviorType.Hunter:
+						m_Hunters.Add(crit);
+					break;
+
+					case BehaviorType.Steak:
+						m_Steaks.Add(crit);
+					break;
+				}
+				m_Crits.Add(crit);
+
+				boid.worldInfos = world;
+				boid.layer = (int)crit.m_Behavior;
+				boids.Add(boid);
 			}
 		}
 	}
