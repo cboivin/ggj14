@@ -20,6 +20,10 @@ public class CritController : BoidsManager
 
 	public List<Critter> m_Crits = new List<Critter>();
 
+	public float m_CurrentPlayerSteakProbability = 0;
+	public float m_AddPlayerSteakProbability = 0.25f;
+	public float m_ReinitPlayerSteakProbability = 0f;
+
 	private PopPoints popPoints;
 
 	void Awake()
@@ -179,19 +183,32 @@ public class CritController : BoidsManager
 		Debug.Log("Create new steak");
 		int index;
 		int tryCount = 0;
-		do
+
+		bool steakIsPlayer = m_Player.m_Behavior == BehaviorType.Normal && Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
+
+		Critter newSteak = null;
+		if (steakIsPlayer == false)
 		{
-			index = Random.Range(0, m_Normals.Count);
-			++tryCount;
-		} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
-		//Debug.Log("tryCount = " + tryCount);
-		if (m_Normals[index].m_CritterType == CritterType.Player)
+			do
+			{
+				index = Random.Range(0, m_Normals.Count);
+				++tryCount;
+			} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
+			//Debug.Log("tryCount = " + tryCount);
+			if (m_Normals[index].m_CritterType == CritterType.Player)
+			{
+				//Debug.Log("no new steak...");
+				return;
+			}
+
+			newSteak = m_Normals[index];
+		}
+		else
 		{
-			//Debug.Log("no new steak...");
-			return;
+			newSteak = m_Player;
+			m_CurrentPlayerSteakProbability = m_ReinitPlayerSteakProbability;
 		}
 
-		Critter newSteak = m_Normals[index];
 		newSteak.m_WillBecomeSteak = true;
 		/*newSteak.m_Behavior = BehaviorType.Steak;
 		newSteak.m_Display = BehaviorType.Steak;
@@ -207,6 +224,17 @@ public class CritController : BoidsManager
 
 		m_Normals.Remove(newSteak);
 		m_Steaks.Add(newSteak);
+
+		if (newSteak == m_Player)
+		{
+			foreach(Critter crit2 in m_Normals)
+			{
+				if (crit2 != m_Player)
+				{
+					crit2.m_Display = BehaviorType.Hunter;
+				}
+			}
+		}
 	}
 	
 	public void CritterCollision(Critter critter1, Critter critter2)
@@ -248,9 +276,18 @@ public class CritController : BoidsManager
 		m_Normals.Remove(victim);
 		m_Steaks.Remove(victim);
 
-		// Replace a steak eaten by a new one
-		if (victim.m_Behavior == BehaviorType.Steak && m_Steaks.Count == 0 && m_Normals.Count > 0 && (m_Hunters.Count == 0 || nextState == eater.m_Behavior))
+		if (victim.m_Behavior == BehaviorType.Steak)
 		{
+			Debug.Log("Should create a new Steak " + m_Steaks.Count + "/" + m_Normals.Count + "/" + m_Hunters.Count + "/" + (nextState == eater.m_Behavior));
+		}
+		// Replace a steak eaten by a new one
+		if ((victim.m_Behavior == BehaviorType.Steak || victim.m_CurrentTimeBeforeSteak > 0) && m_Steaks.Count == 0 && m_Normals.Count > 0/*&& (m_Hunters.Count == 0 || nextState == eater.m_Behavior)*/)
+		{
+			if (eater != m_Player)
+			{
+				m_CurrentPlayerSteakProbability += m_AddPlayerSteakProbability;
+			}
+
 			CreateNewSteak();
 		}
 
@@ -258,7 +295,7 @@ public class CritController : BoidsManager
 		{
 			foreach(Critter crit in m_Hunters)
 			{
-				if (crit.m_CritterType == CritterType.Player)
+				/*if (crit.m_CritterType == CritterType.Player)
 				{
 					foreach(Critter crit2 in m_Normals)
 					{
@@ -267,7 +304,7 @@ public class CritController : BoidsManager
 							crit2.m_Display = BehaviorType.Hunter;
 						}
 					}
-				}
+				}*/
 				//Debug.Log("Hunter become Steak");
 				//crit.m_Behavior = BehaviorType.Steak;
 				//crit.m_Display = BehaviorType.Steak;
