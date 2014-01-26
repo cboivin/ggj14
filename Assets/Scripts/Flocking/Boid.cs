@@ -11,7 +11,9 @@ namespace GameJam.Boids {
 		public Effector[] effectors;
 
 		public int layer;
-		
+
+		public bool toBeSteak;
+
 		[HideInInspector]
 		public AttractorComponent attactor;
 		[HideInInspector]
@@ -118,12 +120,18 @@ namespace GameJam.Boids {
 
 		private void applyVelocities() {
 			if ( this.alignmentEffectors != 0 ) {
+				if ( toBeSteak ) {
+					this.alignmentVel *= -1f;
+				}
 				this.velocity += this.alignmentVel * 0.1f/this.alignmentEffectors;
 			}
 			if ( this.repulsionEffectors != 0 ) {
 				this.velocity += this.repulsionVel * 0.1f;
 			}
 			if ( this.attractionEffectors != 0 ) {
+				if ( toBeSteak ) {
+					this.attractionVel += -1f;
+				}
 				this.velocity += this.attractionVel * 0.1f /this.attractionEffectors;
 			}
 			this.alignmentVel = this.repulsionVel = this.attractionVel = Vector3.zero;
