@@ -6,6 +6,7 @@ using GameJam.Boids;
 public class TimedCircularEffector : MonoBehaviour {
 
 	public float timeOut;
+	public bool distanceOverTime;
 
 	private CircularEffector effector;
 	private float initialEffectDistance;
@@ -21,12 +22,17 @@ public class TimedCircularEffector : MonoBehaviour {
 	}
 
 	public void Update() {
+		if ( initialTimeOut < 0 ) {
+			return;
+		}
 		this.timeOut -= Time.deltaTime;
 		if ( timeOut <= 0 ) {
 			GameObject.Destroy(this.gameObject);
 			return;
 		}
-		this.effector.effectDistance = this.initialEffectDistance * this.timeOut / this.initialTimeOut;
+		if ( this.distanceOverTime ) {
+			this.effector.effectDistance = this.initialEffectDistance * this.timeOut / this.initialTimeOut;
+		}
 		this.effectZone.radius = this.effector.effectDistance;
 	}
 

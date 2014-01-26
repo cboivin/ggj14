@@ -27,6 +27,11 @@ namespace GameJam.Boids {
 			return Vector3.Cross(this.linePosition.direction, other.myTransform.position - this.linePosition.origin).magnitude * this.effectDirection;
 		}
 
+		public bool ComputeSide(Boid other) {
+			Vector3 cross =  Vector3.Cross(this.linePosition.direction, other.myTransform.position - this.linePosition.origin);
+			return cross.z < 0;
+		}
+
 	}
 
 }

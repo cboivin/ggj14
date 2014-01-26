@@ -111,13 +111,13 @@ namespace GameJam.Boids {
 
 		private void applyVelocities() {
 			if ( this.alignmentEffectors != 0 ) {
-				this.velocity += this.alignmentVel/this.alignmentEffectors;	
+				this.velocity += this.alignmentVel * 0.1f/this.alignmentEffectors;	
 			}
 			if ( this.repulsionEffectors != 0 ) {
-				this.velocity += this.repulsionVel;
+				this.velocity += this.repulsionVel * 0.1f;
 			}
 			if ( this.attractionEffectors != 0 ) {
-				this.velocity += this.attractionVel/this.attractionEffectors;
+				this.velocity += this.attractionVel * 0.1f /this.attractionEffectors;
 			}
 			this.alignmentEffectors = this.attractionEffectors = this.repulsionEffectors = 0;
 			this.alignmentVel = this.repulsionVel = this.attractionVel = Vector3.zero;

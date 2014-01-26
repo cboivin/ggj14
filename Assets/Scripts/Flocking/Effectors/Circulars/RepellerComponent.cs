@@ -5,6 +5,7 @@ namespace GameJam.Boids {
 
 	public class RepellerComponent : CircularEffector {
 
+		public bool onDistance;
 		private bool isBoid;
 		private Boid boid;
 		
@@ -28,8 +29,12 @@ namespace GameJam.Boids {
 			if (  direction.sqrMagnitude > this.effectDistance*this.effectDistance ) {
 				return;
 			}
-			Debug.DrawLine(this.myTransform.position, other.transform.position, Color.white);
-			other.repulsionVel += this.intensity * direction.normalized;
+			if ( this.onDistance ) {
+				other.repulsionVel += this.intensity * direction.normalized / direction.sqrMagnitude ;
+			} else {
+				other.repulsionVel += this.intensity * direction.normalized ;
+			}
+
 			other.repulsionEffectors++;
 		}
 		

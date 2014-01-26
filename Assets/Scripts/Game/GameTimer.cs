@@ -5,7 +5,7 @@ using System.Collections;
 public class GameTimer : MonoBehaviour {
 
 	public float maxTime;
-	public float remainingTime;
+	private float remainingTime;
 	public event Action timerEndHandler;
 	private bool running;
 
@@ -27,6 +27,7 @@ public class GameTimer : MonoBehaviour {
 			if ( this.remainingTime <= 0f ) {
 				if ( this.timerEndHandler != null ) {
 					this.running = false;
+					Debug.Log("timerEnd");
 					this.timerEndHandler();
 				}
 			}

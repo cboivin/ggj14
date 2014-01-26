@@ -3,15 +3,17 @@ using System.Collections;
 
 public class Game : GameFSM {
 
-	public GameTimer timer;
+	public GameTimer readyTimer;
+	public CritController critController;
 
 	#region ready
 	
 	protected override void Ready_EnterState() {
-		this.timer = this.GetComponent<GameTimer>();
-		this.timer.timerEndHandler += this.OnTimerEnd;	
-		this.timer.StartTimer();
-		this.state = GameState.Run;
+		Debug.Log("ready_enter");
+		this.critController = GameObject.FindObjectOfType<CritController>();
+		this.readyTimer = this.GetComponent<GameTimer>();
+		this.readyTimer.timerEndHandler += this.OnTimerEnd;	
+		this.readyTimer.StartTimer();
 	}
 	
 	protected override void Ready_Update() {
@@ -22,12 +24,17 @@ public class Game : GameFSM {
 		
 	}
 	
+	private void OnTimerEnd() {
+		this.state = GameState.Run;
+	}
+	
 	#endregion
 	
 	#region Run
 	
 	protected override void Run_EnterState() {
-		
+		Debug.Log("Run!");
+		this.critController.PopHunter();
 	}
 	
 	protected override void Run_Update() {
@@ -37,9 +44,6 @@ public class Game : GameFSM {
 		
 	}
 
-	private void OnTimerEnd() {
-		this.state = GameState.End;
-	}
 	
 	#endregion
 	
