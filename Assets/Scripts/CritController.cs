@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using GameJam.Boids;
 
 public class CritController : BoidsManager
@@ -20,6 +21,8 @@ public class CritController : BoidsManager
 
 	public List<Critter> m_Crits = new List<Critter>();
 
+
+	public event Action LooseHandler;
 	public float m_CurrentPlayerSteakProbability = 0;
 	public float m_AddPlayerSteakProbability = 0.25f;
 	public float m_ReinitPlayerSteakProbability = 0f;
@@ -181,17 +184,22 @@ public class CritController : BoidsManager
 	public void CreateNewSteak()
 	{
 		Debug.Log("Create new steak");
-		int index;
+		int index = 0;
 		int tryCount = 0;
 
-		bool steakIsPlayer = m_Player.m_Behavior == BehaviorType.Normal && Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
+		bool steakIsPlayer = m_Player.m_Behavior == BehaviorType.Normal && UnityEngine.Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
 
 		Critter newSteak = null;
 		if (steakIsPlayer == false)
 		{
+			index = UnityEngine.Random.Range(0, m_Normals.Count);
+			++tryCount;
+		} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
+		//Debug.Log("tryCount = " + tryCount);
+		if (m_Normals[index].m_CritterType == CritterType.Player) {
 			do
 			{
-				index = Random.Range(0, m_Normals.Count);
+				index = UnityEngine.Random.Range(0, m_Normals.Count);
 				++tryCount;
 			} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
 			//Debug.Log("tryCount = " + tryCount);
@@ -333,6 +341,11 @@ public class CritController : BoidsManager
 						crit.m_Display = BehaviorType.Steak;
 					}
 				}
+			}
+		}
+		if ( victim.m_CritterType == CritterType.Player ) {
+			if ( this.LooseHandler != null ) {
+				this.LooseHandler();
 			}
 		}
 
