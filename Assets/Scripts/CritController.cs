@@ -68,7 +68,8 @@ public class CritController : BoidsManager
 		this.StartCoroutine(this.ContinuousPopCoroutine());
 	}
 
-	public void InitialPop() {
+	public void InitialPop()
+	{
 		for( int i = 0; i < this.boidsNumber - 1; i ++ ) {
 			Vector3 popPos = UnityEngine.Random.insideUnitCircle;
 			popPos.Scale(Vector2.right * 2 + Vector2.up * 1);
@@ -116,11 +117,6 @@ public class CritController : BoidsManager
 		if (boid && crit)
 		{
 			crit.m_Behavior = type;
-			if (m_Crits.Count == 2)
-			{
-				Debug.Log("CREATE STEAK");
-				crit.m_WillBecomeSteak = true;
-			}
 
 			switch ( this.m_Player.m_Behavior )
 			{

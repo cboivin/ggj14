@@ -35,6 +35,7 @@ public class Game : GameFSM {
 	protected override void Run_EnterState() {
 		Debug.Log("Run!");
 		this.critController.PopHunter();
+		this.critController.CreateNewSteak();
 	}
 	
 	protected override void Run_Update() {
