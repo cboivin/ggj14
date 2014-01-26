@@ -107,7 +107,10 @@ public class Critter : MonoBehaviour
 			Debug.Log("WILL BECOME STEAK " + m_CritterType);
 
 			// Play anim
-			m_Animator.runtimeAnimatorController = m_Becoming_Steak_Anim;
+			if (m_Display == BehaviorType.Normal)
+			{
+				m_Animator.runtimeAnimatorController = m_Becoming_Steak_Anim;
+			}
 		}
 
 		if (m_CurrentTimeBeforeSteak > 0)
@@ -296,7 +299,15 @@ public class Critter : MonoBehaviour
 			break;
 
 			case BehaviorType.Normal:
-			m_Animator.runtimeAnimatorController = m_Normal_Running_Anim;
+			if (m_CurrentTimeBeforeSteak == 0)
+			{
+				m_Animator.runtimeAnimatorController = m_Normal_Running_Anim;
+			}
+			else 
+			{
+				m_Animator.runtimeAnimatorController = m_Becoming_Steak_Anim;
+			}
+
 			m_Animator.speed = 1.5f;
 			break;
 

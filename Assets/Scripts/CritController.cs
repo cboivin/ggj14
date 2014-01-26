@@ -188,20 +188,16 @@ public class CritController : BoidsManager
 		int tryCount = 0;
 
 		bool steakIsPlayer = m_Player.m_Behavior == BehaviorType.Normal && UnityEngine.Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
-
+		Debug.Log("steakIsPlayer ? " + steakIsPlayer + " current proba = " + m_CurrentPlayerSteakProbability);
 		Critter newSteak = null;
 		if (steakIsPlayer == false)
 		{
-			index = UnityEngine.Random.Range(0, m_Normals.Count);
-			++tryCount;
-		} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
-		//Debug.Log("tryCount = " + tryCount);
-		if (m_Normals[index].m_CritterType == CritterType.Player) {
 			do
 			{
 				index = UnityEngine.Random.Range(0, m_Normals.Count);
 				++tryCount;
-			} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
+			}
+			while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
 			//Debug.Log("tryCount = " + tryCount);
 			if (m_Normals[index].m_CritterType == CritterType.Player)
 			{
