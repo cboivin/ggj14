@@ -39,6 +39,15 @@ public class Critter : MonoBehaviour
 	public RuntimeAnimatorController m_Hunter_Running_Anim;
 	public RuntimeAnimatorController m_Becoming_Steak_Anim;
 
+	public List<ParticleSystem> m_TransformParticles_Normal;
+	public List<ParticleSystem> m_TransformParticles_Steak;
+	public List<ParticleSystem> m_TransformParticles_Hunter;
+
+	public List<ParticleSystem> m_EatParticles_Normal;
+	public List<ParticleSystem> m_EatParticles_Steak;
+
+
+
 	public GameObject m_RepulsorPrefab;
 
 	private BehaviorType m_SavedBehavior;
@@ -145,6 +154,7 @@ public class Critter : MonoBehaviour
 
 		if (m_SavedDisplay != m_Display)
 		{
+			PlayTransformParticles();
 			m_SavedDisplay = m_Display;
 			UpdateDisplay();
 			if (m_RepulsorPrefab)
@@ -198,6 +208,56 @@ public class Critter : MonoBehaviour
 			if(behavior!=null)
 			{
 				behavior.ApplyBehavior(m_Boid);
+			}
+		}
+	}
+
+	public void PlayEatParticles()
+	{
+		List<ParticleSystem> systems = null;
+		switch(m_Display)
+		{
+			case BehaviorType.Normal:
+			systems = m_EatParticles_Normal;
+			break;
+
+			case BehaviorType.Steak:
+				systems = m_EatParticles_Steak;
+				break;
+		}
+
+		if (systems != null)
+		{
+			foreach (ParticleSystem system in systems)
+			{
+				Instantiate(system, m_Transform.position, Quaternion.identity);
+			}
+		}
+	}
+
+	public void PlayTransformParticles()
+	{
+		List<ParticleSystem> systems = null;
+		switch(m_Display)
+		{
+			case BehaviorType.Normal:
+			systems = m_TransformParticles_Normal;
+			break;
+
+			case BehaviorType.Steak:
+			systems = m_TransformParticles_Steak;
+			break;
+
+			case BehaviorType.Hunter:
+			systems = m_TransformParticles_Hunter;
+			break;
+		}
+
+		if (systems != null)
+		{
+			foreach (ParticleSystem system in systems)
+			{
+				Instantiate(system, m_Transform.position, Quaternion.identity);
 			}
 		}
 	}

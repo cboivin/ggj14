@@ -279,6 +279,8 @@ public class CritController : BoidsManager
 
 		victim.mId = -1;
 
+		victim.PlayEatParticles();
+
 		m_Crits.Remove(victim);
 		//m_Hunters.Remove(victim);
 		m_Normals.Remove(victim);
