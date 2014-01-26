@@ -4,14 +4,16 @@ using System.Collections;
 public class Game : GameFSM {
 
 	public GameTimer readyTimer;
+	public CritController critController;
 
 	#region ready
 	
 	protected override void Ready_EnterState() {
+		Debug.Log("ready_enter");
+		this.critController = GameObject.FindObjectOfType<CritController>();
 		this.readyTimer = this.GetComponent<GameTimer>();
 		this.readyTimer.timerEndHandler += this.OnTimerEnd;	
 		this.readyTimer.StartTimer();
-		this.state = GameState.Run;
 	}
 	
 	protected override void Ready_Update() {
@@ -31,7 +33,8 @@ public class Game : GameFSM {
 	#region Run
 	
 	protected override void Run_EnterState() {
-		
+		Debug.Log("Run!");
+		this.critController.PopHunter();
 	}
 	
 	protected override void Run_Update() {

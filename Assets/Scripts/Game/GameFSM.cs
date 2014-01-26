@@ -29,14 +29,14 @@ public class GameFSM : MonoBehaviour {
 				nextExit = this.Ready_ExitState;
 				break;
 			case GameState.Run:
-				enterFunc = this.Ready_EnterState;
-				updateFunc = this.Ready_Update;
-				nextExit = this.Ready_ExitState;
+				enterFunc = this.Run_EnterState;
+				updateFunc = this.Run_Update;
+				nextExit = this.Run_ExitState;
 				break;
 			case GameState.End:
-				enterFunc = this.Ready_EnterState;
-				updateFunc = this.Ready_Update;
-				nextExit = this.Ready_ExitState;
+				enterFunc = this.End_EnterState;
+				updateFunc = this.End_Update;
+				nextExit = this.End_ExitState;
 				break;
 			}
 
@@ -53,7 +53,7 @@ public class GameFSM : MonoBehaviour {
 	}
 
 	public void Start() {
-		this.currentState = GameState.Ready;
+		this.state = GameState.Ready;
 	}
 
 	public void Update() {

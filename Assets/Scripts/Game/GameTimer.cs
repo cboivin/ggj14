@@ -27,6 +27,7 @@ public class GameTimer : MonoBehaviour {
 			if ( this.remainingTime <= 0f ) {
 				if ( this.timerEndHandler != null ) {
 					this.running = false;
+					Debug.Log("timerEnd");
 					this.timerEndHandler();
 				}
 			}

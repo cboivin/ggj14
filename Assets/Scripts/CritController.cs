@@ -69,7 +69,7 @@ public class CritController : BoidsManager
 	}
 
 	public void InitialPop() {
-		for( int i = 0; i < this.boidsNumber; i ++ ) {
+		for( int i = 0; i < this.boidsNumber - 1; i ++ ) {
 			Vector3 popPos = UnityEngine.Random.insideUnitCircle;
 			popPos.Scale(Vector2.right * 2 + Vector2.up * 1);
 			popPos *= 15;
@@ -81,6 +81,7 @@ public class CritController : BoidsManager
 		PopPoint p = null;
 		do {
 			p = this.popPoints.GetPopPoint();
+			Debug.Log("search");
 		} while ( p == null );
 		
 		this.InstanciateBoid(p.transform.position, BehaviorType.Hunter);
@@ -115,17 +116,32 @@ public class CritController : BoidsManager
 		if (boid && crit)
 		{
 			crit.m_Behavior = type;
+
 			switch ( this.m_Player.m_Behavior ) {
-				case BehaviorType.Hunter:
-					crit.m_Display = BehaviorType.Steak;
-					break;
+			case BehaviorType.Hunter:
+				crit.m_Display = BehaviorType.Steak;
+				break;
+			case BehaviorType.Normal:
+				switch (crit.m_Behavior)
+				{
 				case BehaviorType.Normal:
 					crit.m_Display = BehaviorType.Normal;
 					break;
-				case BehaviorType.Steak:
+						
+				case BehaviorType.Hunter:
 					crit.m_Display = BehaviorType.Hunter;
 					break;
+						
+				case BehaviorType.Steak:
+					crit.m_Display = BehaviorType.Steak;
+					break;
+				}
+				break;
+			case BehaviorType.Steak:
+				crit.m_Display = BehaviorType.Hunter;
+				break;
 			}
+
 			switch (crit.m_Behavior)
 			{
 				case BehaviorType.Normal:
