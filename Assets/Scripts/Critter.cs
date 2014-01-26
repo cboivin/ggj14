@@ -62,7 +62,7 @@ public class Critter : MonoBehaviour
 
 	public float PLAYER_STEAK_TIME = 5.0f;
 
-	public float TIME_BEFORE_STEAK = 5.0f;
+	public float TIME_BEFORE_STEAK = 3.0f;
 
 	public static int static_id = 0;
 
