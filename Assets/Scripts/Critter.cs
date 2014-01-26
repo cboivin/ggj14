@@ -233,7 +233,8 @@ public class Critter : MonoBehaviour
 		{
 			foreach (ParticleSystem system in systems)
 			{
-				Instantiate(system, m_Transform.position, Quaternion.identity);
+				ParticleSystem go = (ParticleSystem)Instantiate(system, m_Transform.position, Quaternion.identity);
+				go.gameObject.AddComponent<CFX_AutoDestructShuriken>();
 			}
 		}
 	}
@@ -260,7 +261,8 @@ public class Critter : MonoBehaviour
 		{
 			foreach (ParticleSystem system in systems)
 			{
-				Instantiate(system, m_Transform.position, Quaternion.identity);
+				ParticleSystem go = (ParticleSystem)Instantiate(system, m_Transform.position, Quaternion.identity);
+				go.gameObject.AddComponent<CFX_AutoDestructShuriken>();
 			}
 		}
 	}
