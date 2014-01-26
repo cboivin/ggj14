@@ -62,7 +62,7 @@ public class Critter : MonoBehaviour
 
 	public float PLAYER_STEAK_TIME = 5.0f;
 
-	public float TIME_BEFORE_STEAK = 5.0f;
+	public float TIME_BEFORE_STEAK = 3.0f;
 
 	public static int static_id = 0;
 
@@ -241,9 +241,15 @@ public class Critter : MonoBehaviour
 
 		if (systems != null)
 		{
+			Transform transform = m_Transform;
+			if (transform == null)
+			{
+				transform = this.transform;
+			}
+
 			foreach (ParticleSystem system in systems)
 			{
-				ParticleSystem go = (ParticleSystem)Instantiate(system, m_Transform.position, Quaternion.identity);
+				ParticleSystem go = (ParticleSystem)Instantiate(system, transform.position, Quaternion.identity);
 				go.gameObject.AddComponent<CFX_AutoDestructShuriken>();
 			}
 		}
@@ -269,9 +275,15 @@ public class Critter : MonoBehaviour
 
 		if (systems != null)
 		{
+			Transform transform = m_Transform;
+			if (transform == null)
+			{
+				transform = this.transform;
+			}
+
 			foreach (ParticleSystem system in systems)
 			{
-				ParticleSystem go = (ParticleSystem)Instantiate(system, m_Transform.position, Quaternion.identity);
+				ParticleSystem go = (ParticleSystem)Instantiate(system, transform.position, Quaternion.identity);
 				go.gameObject.AddComponent<CFX_AutoDestructShuriken>();
 			}
 		}

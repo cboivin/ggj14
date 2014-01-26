@@ -12,6 +12,7 @@ namespace GameJam.Boids {
 
 		public int layer;
 
+		public bool isPlayer;
 		public bool toBeSteak;
 
 		[HideInInspector]
@@ -59,7 +60,10 @@ namespace GameJam.Boids {
 		}
 
 		private void Update() {
-
+			if (isPlayer)
+			{
+				return;
+			}
 			this.updateEffectors();
 
 			this.applyVelocities();
