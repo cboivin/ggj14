@@ -19,6 +19,7 @@ public class Game : GameFSM {
 		this.playerController = this.GetComponentInChildren<PlayerController>();
 		this.gui = GameObject.FindObjectOfType<GUIManager>();
 		this.critController = GameObject.FindObjectOfType<CritController>();
+		this.critController.LooseHandler += this.OnLooseGame;
 		this.readyTimer = this.GetComponent<GameTimer>();
 		this.gui.startScreen(this.readyTimer.maxTime);
 		this.readyTimer.timerEndHandler += this.OnTimerEnd;	
@@ -58,17 +59,24 @@ public class Game : GameFSM {
 	#endregion
 	
 	#region End
-	
+
+	void OnLooseGame() {
+		Debug.Log("loose game");
+		this.state = GameState.End;
+	}
+
 	protected override void End_EnterState() {
-		Application.LoadLevel(0);	
+		this.gui.EndScreen(true);
 	}
 	
 	protected override void End_Update() {
-		
+		if ( Input.GetAxis("Fire1") > 0) {
+			Application.LoadLevel(1);
+		}
 	}
 	
 	protected override void End_ExitState() {
-		
+		this.gui.EndScreen(false);
 	}
 	
 	#endregion

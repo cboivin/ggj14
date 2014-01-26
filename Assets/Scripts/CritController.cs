@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using GameJam.Boids;
 
 public class CritController : BoidsManager
@@ -19,6 +20,8 @@ public class CritController : BoidsManager
 	public List<Critter> m_Steaks = new List<Critter>();
 
 	public List<Critter> m_Crits = new List<Critter>();
+
+	public event Action LooseHandler;
 
 	private PopPoints popPoints;
 
@@ -185,7 +188,7 @@ public class CritController : BoidsManager
 		int tryCount = 0;
 		do
 		{
-			index = Random.Range(0, m_Normals.Count);
+			index = UnityEngine.Random.Range(0, m_Normals.Count);
 			++tryCount;
 		} while(m_Normals[index].m_CritterType == CritterType.Player && tryCount < 100);
 		//Debug.Log("tryCount = " + tryCount);
@@ -298,6 +301,11 @@ public class CritController : BoidsManager
 						crit.m_Display = BehaviorType.Steak;
 					}
 				}
+			}
+		}
+		if ( victim.m_CritterType == CritterType.Player ) {
+			if ( this.LooseHandler != null ) {
+				this.LooseHandler();
 			}
 		}
 
