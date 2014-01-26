@@ -31,14 +31,14 @@ public class PlayerController : MonoBehaviour
 
 		if (m_CurrentDashDuration == 0)
 		{
-			m_CurrentDashCooldown = Mathf.Max(0, m_CurrentDashCooldown - Time.deltaTime);
-
+			/*m_CurrentDashCooldown = Mathf.Max(0, m_CurrentDashCooldown - Time.deltaTime);
+			
 			if (m_CurrentDashCooldown == 0 && Input.GetAxis("Fire1") > 0)
 			{
 				m_CurrentDashDuration = m_DashDuration;
 				m_CurrentDashPosition = cursorWorldPosition;
 				m_CurrentDashCooldown = m_DashCooldown;
-			}
+			}*/
 		}
 
 		Vector3 targetPosition = cursorWorldPosition;
