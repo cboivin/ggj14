@@ -116,30 +116,36 @@ public class CritController : BoidsManager
 		if (boid && crit)
 		{
 			crit.m_Behavior = type;
+			if (m_Crits.Count == 2)
+			{
+				Debug.Log("CREATE STEAK");
+				crit.m_WillBecomeSteak = true;
+			}
 
-			switch ( this.m_Player.m_Behavior ) {
-			case BehaviorType.Hunter:
-				crit.m_Display = BehaviorType.Steak;
-				break;
-			case BehaviorType.Normal:
-				switch (crit.m_Behavior)
-				{
-				case BehaviorType.Normal:
-					crit.m_Display = BehaviorType.Normal;
-					break;
-						
+			switch ( this.m_Player.m_Behavior )
+			{
 				case BehaviorType.Hunter:
-					crit.m_Display = BehaviorType.Hunter;
-					break;
-						
-				case BehaviorType.Steak:
 					crit.m_Display = BehaviorType.Steak;
 					break;
-				}
-				break;
-			case BehaviorType.Steak:
-				crit.m_Display = BehaviorType.Hunter;
-				break;
+				case BehaviorType.Normal:
+					switch (crit.m_Behavior)
+					{
+					case BehaviorType.Normal:
+						crit.m_Display = BehaviorType.Normal;
+						break;
+							
+					case BehaviorType.Hunter:
+						crit.m_Display = BehaviorType.Hunter;
+						break;
+							
+					case BehaviorType.Steak:
+						crit.m_Display = BehaviorType.Steak;
+						break;
+					}
+					break;
+				case BehaviorType.Steak:
+					crit.m_Display = BehaviorType.Hunter;
+					break;
 			}
 
 			switch (crit.m_Behavior)
@@ -174,7 +180,7 @@ public class CritController : BoidsManager
 
 	public void CreateNewSteak()
 	{
-		//Debug.Log("Create new steak");
+		Debug.Log("Create new steak");
 		int index;
 		int tryCount = 0;
 		do
@@ -190,6 +196,16 @@ public class CritController : BoidsManager
 		}
 
 		Critter newSteak = m_Normals[index];
+		newSteak.m_WillBecomeSteak = true;
+		/*newSteak.m_Behavior = BehaviorType.Steak;
+		newSteak.m_Display = BehaviorType.Steak;
+
+		m_Normals.Remove(newSteak);
+		m_Steaks.Add(newSteak);*/
+	}
+
+	public void AddSteak(Critter newSteak)
+	{
 		newSteak.m_Behavior = BehaviorType.Steak;
 		newSteak.m_Display = BehaviorType.Steak;
 
@@ -257,10 +273,13 @@ public class CritController : BoidsManager
 					}
 				}
 				//Debug.Log("Hunter become Steak");
-				crit.m_Behavior = BehaviorType.Steak;
-				crit.m_Display = BehaviorType.Steak;
+				//crit.m_Behavior = BehaviorType.Steak;
+				//crit.m_Display = BehaviorType.Steak;
+				crit.m_Behavior = BehaviorType.Normal;
+				crit.m_Display = BehaviorType.Normal;
 			}
-			m_Steaks.AddRange(m_Hunters);
+			//m_Steaks.AddRange(m_Hunters);
+			m_Normals.AddRange(m_Hunters);
 			m_Hunters.Clear();
 
 			m_Normals.Remove(eater);
@@ -269,6 +288,7 @@ public class CritController : BoidsManager
 
 		if (eater.m_CritterType == CritterType.Player)
 		{
+			ScoreManager.AddScore();
 			if (nextState == BehaviorType.Hunter)
 			{
 				foreach (Critter crit in m_Normals)
