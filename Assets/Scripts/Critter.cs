@@ -45,7 +45,7 @@ public class Critter : MonoBehaviour
 	private BehaviorType m_SavedDisplay;
 	private float m_PreviousX;
 	private float m_CurrentSteakTime;
-	private float m_CurrentTimeBeforeSteak = 0;
+	public float m_CurrentTimeBeforeSteak = 0;
 
 	public float HUNTER_SCALE = 1.4f;
 	public float NORMAL_SCALE = 0.8f;
@@ -95,7 +95,7 @@ public class Critter : MonoBehaviour
 			m_CurrentTimeBeforeSteak = TIME_BEFORE_STEAK;
 			m_WillBecomeSteak = false;
 
-			Debug.Log("WILL BECOME STEAK");
+			Debug.Log("WILL BECOME STEAK " + m_CritterType);
 
 			// Play anim
 			m_Animator.runtimeAnimatorController = m_Becoming_Steak_Anim;
@@ -124,10 +124,20 @@ public class Critter : MonoBehaviour
 			{
 				m_Boid.layer = (int)m_Behavior;
 			}
-			if (m_Behavior == BehaviorType.Steak && m_CritterType == CritterType.Player)
+			if (m_CritterType == CritterType.Player)
 			{
-				//Debug.Log("STEAK TIME");
-				m_CurrentSteakTime = PLAYER_STEAK_TIME;
+				if (m_Behavior == BehaviorType.Steak)
+				{
+					//Debug.Log("STEAK TIME");
+					m_CurrentSteakTime = PLAYER_STEAK_TIME;
+				}
+				else if (m_Behavior == BehaviorType.Normal)
+				{
+					foreach (Critter crit in CritController.Instance.m_Normals)
+					{
+						crit.m_Display = BehaviorType.Normal;
+					}
+				}
 			}
 
 			m_SavedBehavior = m_Behavior;
