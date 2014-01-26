@@ -40,6 +40,8 @@ public class CritController : BoidsManager
 		base.Start();
 		this.popPoints = GameObject.FindObjectOfType<PopPoints>();
 
+		// Init Player
+
 		if (BoidTemplate != null)
 		{
 			if (m_Player != null)
@@ -55,10 +57,36 @@ public class CritController : BoidsManager
 				}
 			}
 		}
-		this.StartCoroutine(this.instanciateBoids());
+
+		this.InitialPop();
+		this.StartContinuousPop();
 	}
 
-	protected IEnumerator instanciateBoids() {
+	#region Instanciate Boids
+
+	public void StartContinuousPop() {
+		this.StartCoroutine(this.ContinuousPopCoroutine());
+	}
+
+	public void InitialPop() {
+		for( int i = 0; i < this.boidsNumber; i ++ ) {
+			Vector3 popPos = UnityEngine.Random.insideUnitCircle;
+			popPos.Scale(Vector2.right * 2 + Vector2.up * 1);
+			popPos *= 15;
+			this.InstanciateBoid(popPos, BehaviorType.Normal);
+		}
+	}
+
+	public void PopHunter() {
+		PopPoint p = null;
+		do {
+			p = this.popPoints.GetPopPoint();
+		} while ( p == null );
+		
+		this.InstanciateBoid(p.transform.position, BehaviorType.Hunter);
+	}
+
+	protected IEnumerator ContinuousPopCoroutine() {
 		int huntersNumber = m_HuntersNumber;
 		int steaksNumber = m_SteakNumber;
 
@@ -67,17 +95,6 @@ public class CritController : BoidsManager
 			while( this.boids.Count > this.boidsNumber ) {
 				yield return new WaitForEndOfFrame();
 			}
-			BehaviorType behaviorType = BehaviorType.Normal;
-			if (huntersNumber > 0)
-			{
-				huntersNumber--;
-				behaviorType = BehaviorType.Hunter;
-			}
-			if (steaksNumber > 0)
-			{
-				steaksNumber--;
-				behaviorType = BehaviorType.Steak;
-			}
 
 			PopPoint p = null;
 			do {
@@ -85,15 +102,20 @@ public class CritController : BoidsManager
 				yield return new WaitForEndOfFrame();
 			} while ( p == null );
 
-			GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate,p.transform.position, Quaternion.identity);
+			this.InstanciateBoid(p.transform.position, BehaviorType.Normal);
+		}
+	}
 
-			Boid boid = gameObject.GetComponent<Boid>();
-			Critter crit = gameObject.GetComponent<Critter>();
-
-			if (boid && crit)
-			{
-				crit.m_Behavior = behaviorType;
-				switch ( this.m_Player.m_Behavior ) {
+	public void InstanciateBoid(Vector3 PopPos, BehaviorType type) {
+		GameObject gameObject = (GameObject)GameObject.Instantiate(BoidTemplate, PopPos, Quaternion.identity);
+		
+		Boid boid = gameObject.GetComponent<Boid>();
+		Critter crit = gameObject.GetComponent<Critter>();
+		
+		if (boid && crit)
+		{
+			crit.m_Behavior = type;
+			switch ( this.m_Player.m_Behavior ) {
 				case BehaviorType.Hunter:
 					crit.m_Display = BehaviorType.Steak;
 					break;
@@ -103,29 +125,31 @@ public class CritController : BoidsManager
 				case BehaviorType.Steak:
 					crit.m_Display = BehaviorType.Hunter;
 					break;
-				}
-				switch (crit.m_Behavior)
-				{
-					case BehaviorType.Normal:
-						m_Normals.Add(crit);
-					break;
-
-					case BehaviorType.Hunter:
-						m_Hunters.Add(crit);
-					break;
-
-					case BehaviorType.Steak:
-						m_Steaks.Add(crit);
-					break;
-				}
-				m_Crits.Add(crit);
-
-				boid.worldInfos = world;
-				boid.layer = (int)crit.m_Behavior;
-				boids.Add(boid);
 			}
+			switch (crit.m_Behavior)
+			{
+				case BehaviorType.Normal:
+					m_Normals.Add(crit);
+					break;
+					
+				case BehaviorType.Hunter:
+					m_Hunters.Add(crit);
+					break;
+					
+				case BehaviorType.Steak:
+					m_Steaks.Add(crit);
+					break;
+			}
+			m_Crits.Add(crit);
+			
+			boid.worldInfos = world;
+			boid.layer = (int)crit.m_Behavior;
+			boids.Add(boid);
 		}
+
 	}
+
+	#endregion
 
 	override protected void keepBoidsNumber()
 	{

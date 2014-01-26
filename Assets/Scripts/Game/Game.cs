@@ -3,14 +3,14 @@ using System.Collections;
 
 public class Game : GameFSM {
 
-	public GameTimer timer;
+	public GameTimer readyTimer;
 
 	#region ready
 	
 	protected override void Ready_EnterState() {
-		this.timer = this.GetComponent<GameTimer>();
-		this.timer.timerEndHandler += this.OnTimerEnd;	
-		this.timer.StartTimer();
+		this.readyTimer = this.GetComponent<GameTimer>();
+		this.readyTimer.timerEndHandler += this.OnTimerEnd;	
+		this.readyTimer.StartTimer();
 		this.state = GameState.Run;
 	}
 	
@@ -20,6 +20,10 @@ public class Game : GameFSM {
 	
 	protected override void Ready_ExitState() {
 		
+	}
+	
+	private void OnTimerEnd() {
+		this.state = GameState.Run;
 	}
 	
 	#endregion
@@ -37,9 +41,6 @@ public class Game : GameFSM {
 		
 	}
 
-	private void OnTimerEnd() {
-		this.state = GameState.End;
-	}
 	
 	#endregion
 	
