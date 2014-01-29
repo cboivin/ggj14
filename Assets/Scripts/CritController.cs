@@ -181,14 +181,17 @@ public class CritController : BoidsManager
 	{
 	}
 
-	public void CreateNewSteak()
+	public void CreateNewSteak(bool _canBePlayer)
 	{
 		Debug.Log("Create new steak");
 		int index = 0;
 		int tryCount = 0;
 
-		bool steakIsPlayer = m_Player.m_Behavior == BehaviorType.Normal && UnityEngine.Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
-		Debug.Log("steakIsPlayer ? " + steakIsPlayer + " current proba = " + m_CurrentPlayerSteakProbability);
+		bool steakIsPlayer = _canBePlayer && m_Player.m_Behavior == BehaviorType.Normal && UnityEngine.Random.Range(0f, 1f) < m_CurrentPlayerSteakProbability;
+		if (steakIsPlayer)
+		{
+			Debug.Log("steakIsPlayer ? " + steakIsPlayer + " current proba = " + m_CurrentPlayerSteakProbability);
+		}
 		Critter newSteak = null;
 		if (steakIsPlayer == false)
 		{
@@ -223,7 +226,7 @@ public class CritController : BoidsManager
 
 	public void AddSteak(Critter newSteak)
 	{
-		Debug.Log("AddSteak " + newSteak.m_CritterType);
+		if (newSteak.m_CritterType == CritterType.Player) Debug.Log("AddSteak " + newSteak.m_CritterType);
 		newSteak.m_Behavior = BehaviorType.Steak;
 		newSteak.m_Display = BehaviorType.Steak;
 
@@ -285,7 +288,7 @@ public class CritController : BoidsManager
 
 		if (victim.m_Behavior == BehaviorType.Steak)
 		{
-			Debug.Log("Should create a new Steak " + m_Steaks.Count + "/" + m_Normals.Count + "/" + m_Hunters.Count + "/" + (nextState == eater.m_Behavior));
+			//Debug.Log("Should create a new Steak " + m_Steaks.Count + "/" + m_Normals.Count + "/" + m_Hunters.Count + "/" + (nextState == eater.m_Behavior));
 		}
 		// Replace a steak eaten by a new one
 		if ((victim.m_Behavior == BehaviorType.Steak || victim.m_CurrentTimeBeforeSteak > 0) && m_Steaks.Count == 0 && m_Normals.Count > 0/*&& (m_Hunters.Count == 0 || nextState == eater.m_Behavior)*/)
@@ -295,7 +298,7 @@ public class CritController : BoidsManager
 				m_CurrentPlayerSteakProbability += m_AddPlayerSteakProbability;
 			}
 
-			CreateNewSteak();
+			CreateNewSteak(eater!=m_Player);
 		}
 
 		if (nextState != eater.m_Behavior)

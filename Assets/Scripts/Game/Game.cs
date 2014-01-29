@@ -46,7 +46,7 @@ public class Game : GameFSM {
 		Debug.Log("Run!");
 		this.critController.PopHunter();
 		this.playerController.enabled = true;
-		this.critController.CreateNewSteak();
+		this.critController.CreateNewSteak(false);
 	}
 	
 	protected override void Run_Update() {

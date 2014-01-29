@@ -18,13 +18,14 @@ public class PopPoints : MonoBehaviour {
 	void OnPopPointFree(PopPoint popPoint) {
 //		Debug.Log("free");
 		this.available.Add(popPoint);
+		popPoint.FreeHandler -= this.OnPopPointFree;
 		if ( this.PopPointFreeHandler != null ) {
 			this.PopPointFreeHandler(popPoint);
 		}
 	}
 
 	public PopPoint GetPopPoint() {
-		int index = UnityEngine.Random.Range(0, this.available.Count -1);
+		int index = UnityEngine.Random.Range(0, this.available.Count);
 		try {
 			PopPoint popPoint = this.available[index];
 			this.available.Remove(popPoint);

@@ -78,6 +78,10 @@ public class Critter : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if (m_Behavior != BehaviorType.Steak)
+		{
+			m_CurrentSteakTime = 0;
+		}
 		if (m_CurrentSteakTime > 0)
 		{
 			m_CurrentSteakTime = Mathf.Max(0, m_CurrentSteakTime - Time.deltaTime);
@@ -94,7 +98,7 @@ public class Critter : MonoBehaviour
 
 				CritController.Instance.m_Steaks.Remove(this);
 				CritController.Instance.m_Normals.Add(this);
-				CritController.Instance.CreateNewSteak();
+				CritController.Instance.CreateNewSteak(false);
 			}
 		}
 
@@ -108,7 +112,7 @@ public class Critter : MonoBehaviour
 				boid.toBeSteak = true;
 			}
 
-			Debug.Log("WILL BECOME STEAK " + m_CritterType);
+			if (m_CritterType == CritterType.Player) Debug.Log("WILL BECOME STEAK " + m_CritterType + " in " + m_CurrentTimeBeforeSteak +"s");
 
 			// Play anim
 			if (m_Display == BehaviorType.Normal)
@@ -124,10 +128,13 @@ public class Critter : MonoBehaviour
 			// Speed anim
 			m_CurrentTimeBeforeSteak = Mathf.Max(0, m_CurrentTimeBeforeSteak-Time.deltaTime);
 
+			if (m_CritterType == CritterType.Player) Debug.Log("BECOMING STEAK " + m_CritterType + " in " + m_CurrentTimeBeforeSteak +"s");
+
 			m_Animator.speed = 1 + TIME_BEFORE_STEAK -m_CurrentTimeBeforeSteak;
 
 			if (m_CurrentTimeBeforeSteak == 0)
 			{
+				if (m_CritterType == CritterType.Player) Debug.Log("BECOME STEAK");
 				Boid boid = GetComponent<Boid>();
 				if (boid != null)
 				{
@@ -173,7 +180,8 @@ public class Critter : MonoBehaviour
 			if (m_RepulsorPrefab)
 			{
 				GameObject repulsor = (GameObject)Instantiate(m_RepulsorPrefab);
-				repulsor.transform.parent = m_Transform;
+				//repulsor.transform.parent = m_Transform;
+				repulsor.transform.position = m_Transform.position;
 			}
 		}
 
